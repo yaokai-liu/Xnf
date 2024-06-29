@@ -286,15 +286,7 @@ class LrItem(object):
             + '"'
 
     def __and__(self, other):
-        return self.rule == other.rule and self.pos == other.pos
-
-
-def in_core(items1: set[LrItem], items2: set[LrItem]) -> bool:
-    for item1 in items1:
-        if not any({item1 & item2 for item2 in items2}):
-            return False
-    return True
-
+        return self.rule == other.rule and self.is_end and other.is_end
 
 def __build_rules__(xnf_tokens):
     status, target, items, rules = 0, '', [], []
@@ -499,6 +491,34 @@ class Parser(object):
 
     def build_compact(self):
         table, lr_items = self.build()
+        redirect = dict()
+        states = list(table.keys())
+
+        print(len(table))
+
+        def in_core(s1, s2) -> bool:
+            nonlocal table, lr_items
+            items1 = lr_items[s1][0]
+            items2 = lr_items[s2][0]
+            for __ in items1:
+                if not any(__ & _ for _ in items2):
+                    return False
+            return True
+
+        for i, state in enumerate(states):
+            if any(isinstance(n, tuple) for n in table[state].values()):
+                continue
+            for s in states[:i]:
+                if in_core(state, s):
+                    redirect[state] = redirect[s] if s in redirect.keys() else s
+        for s in redirect:
+            table[redirect[s]].update(table.pop(s))
+        for state in table.keys():
+            for k, v in table[state].items():
+                if v in redirect:
+                    table[state][k] = redirect[v]
+
+        print(len(table))
 
         return table, lr_items
 
@@ -522,7 +542,8 @@ class Parser(object):
             lines = [f"'{t}': {list(s)}".replace("'", '"')
                      for t, s in self.__FOLLOW_SET__.items()]
             f.write('{' + ','.join(lines) + '}')
-        with open(dest_dir / 'machine.json', 'w') as f:
+        table_name = 'machine.json' if not compact else 'machine-compact.json'
+        with open(dest_dir / table_name, 'w') as f:
             f.write(str({
                 f"({', '.join(i)})": {
                     t: (n if isinstance(n, str) else f"({', '.join(n)})") for t, n in s.items()
