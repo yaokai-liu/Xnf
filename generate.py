@@ -1,10 +1,16 @@
 import os
+import sys
 from pathlib import Path
 from xnf import *
-
-cfd = Path(os.path.dirname(__file__))
-with open(cfd / 'regex.xnf', 'r', encoding='utf-8') as f:
-    XNF_PARSER.set_rules(f.read(), start='Regexp')
+__dir__ = Path(os.path.dirname(__file__))
 
 if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        cfd = __dir__
+    elif not os.path.isabs(sys.argv[1]):
+        cfd = Path(os.getcwd()) / sys.argv[1]
+    else:
+        cfd = sys.argv[0]
+    with open(__dir__ / 'regex.xnf', 'r', encoding='utf-8') as f:
+        XNF_PARSER.set_rules(f.read(), start='Regexp')
     XNF_PARSER.dump(cfd)
