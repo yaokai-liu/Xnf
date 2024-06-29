@@ -1,8 +1,7 @@
 import re
-from pathlib import Path
 
 
-class Terminal(object):
+class Token(object):
 
     def __new__(cls, _type, _value, _lineno, _column):
         if not _value: return None
@@ -63,7 +62,7 @@ class Lexer(object):
         def __match(_input):
             pattern = re.compile(_token)
             result = pattern.match(_input)
-            return Terminal(_name, result, self.lineno, self.column)
+            return Token(_name, result, self.lineno, self.column)
 
         return __match
 
@@ -155,7 +154,7 @@ class Lexer(object):
                 return result
             elif self.literal_patterns.match(_input):
                 res = self.literal_patterns.match(_input)
-                return Terminal(f'"{res.group(0)}"', res, self.lineno, self.column)
+                return Token(f'"{res.group(0)}"', res, self.lineno, self.column)
             else:
                 return None
         # elif kwargs.get('mode') == 'fastest':
@@ -167,7 +166,7 @@ class Lexer(object):
                         return result
             if self.literal_patterns.match(_input):
                 res = self.literal_patterns.match(_input)
-                return Terminal(f'"{res.group(0)}"', res, self.lineno, self.column)
+                return Token(f'"{res.group(0)}"', res, self.lineno, self.column)
             return None
 
     def lex(self, _input, token=None, **kwargs):
@@ -178,7 +177,7 @@ class Lexer(object):
         if token == '_LITERAL_':
             if self.literal_patterns.match(_input):
                 res = self.literal_patterns.match(_input)
-                return Terminal(f'"{res.group(0)}"', res, self.lineno, self.column)
+                return Token(f'"{res.group(0)}"', res, self.lineno, self.column)
             else:
                 return None
         return self.__TOKENS__[token](_input)
@@ -301,7 +300,7 @@ def __build_rules__(xnf_tokens):
     status, target, items, rules = 0, '', [], []
     count = 0
 
-    def accept_token(_token: Terminal):
+    def accept_token(_token: Token):
         nonlocal status, target, items, rules, count
         if status == 0 and _token.type == 'IDENTIFIER':
             target = _token.value
@@ -504,6 +503,7 @@ class Parser(object):
         return table, lr_items
 
     def dump(self, dest_dir: str, compact: bool = False):
+        from pathlib import Path
         dest_dir = Path(dest_dir)
         table, lr_items = self.build_compact() if compact else self.build()
         rules = sorted(self.rules, key=lambda r: r.name)
