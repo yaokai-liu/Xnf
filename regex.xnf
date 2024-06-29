@@ -1,0 +1,18 @@
+
+Regexp = BranchArray;
+BranchArray = BranchArray SPLIT Branch | Branch;
+Branch = ObjectArray;
+ObjectArray = Object ObjectArray | Object;
+Object = Sequence | Charset | Group | Quantified
+       | NOT CHAR | NOT Charset | NOT Group;
+Sequence = CHAR Sequence | CHAR;
+Charset = BEGIN_CHARSET CharsetUnitArray END_CHARSET;
+CharsetUnitArray = CharsetUnit CharsetUnitArray | CharsetUnit;
+CharsetUnit = Sequence | Range | Charset
+            | NOT Sequence | NOT Range | NOT Charset ;
+Group = BEGIN_GROUP Regexp END_GROUP;
+Quantified = Object Quantifier;
+Quantifier = QUEST | PLUS | TIMES | NumQuantifier;
+NumQuantifier = BEGIN_QUANTIFIER NUMBER COMMA NUMBER END_QUANTIFIER
+              | BEGIN_QUANTIFIER NUMBER END_QUANTIFIER;
+Range = CHAR MINUS CHAR;
