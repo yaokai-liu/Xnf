@@ -11,6 +11,10 @@ if __name__ == '__main__':
         cfd = Path(os.getcwd()) / sys.argv[1]
     else:
         cfd = sys.argv[0]
+    if len(sys.argv) < 3 or sys.argv[2] != '--compact':
+        compact = False
+    else:
+        compact = True
     with open(__dir__ / 'regex.xnf', 'r', encoding='utf-8') as f:
         XNF_PARSER.set_rules(f.read(), start='Regexp')
-    XNF_PARSER.dump(cfd)
+    XNF_PARSER.dump(cfd, compact=compact)

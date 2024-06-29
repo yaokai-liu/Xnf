@@ -1,15 +1,12 @@
 
-Regexp = BranchArray;
-BranchArray = BranchArray SPLIT Branch | Branch;
-Branch = ObjectArray;
-ObjectArray = Object ObjectArray | Object;
-Object = Sequence | Charset | Group | Quantified
+Regexp = Branch SPLIT Regexp | Branch;
+Branch =  Object Branch | Object;
+Object = CHAR | Charset | Group | Quantified
        | NOT CHAR | NOT Charset | NOT Group;
-Sequence = CHAR Sequence | CHAR;
 Charset = BEGIN_CHARSET CharsetUnitArray END_CHARSET;
 CharsetUnitArray = CharsetUnit CharsetUnitArray | CharsetUnit;
-CharsetUnit = Sequence | Range | Charset
-            | NOT Sequence | NOT Range | NOT Charset ;
+CharsetUnit = CHAR | Range | Charset
+            | NOT CHAR | NOT Range | NOT Charset;
 Group = BEGIN_GROUP Regexp END_GROUP;
 Quantified = Object Quantifier;
 Quantifier = QUEST | PLUS | TIMES | NumQuantifier;
