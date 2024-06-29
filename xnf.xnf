@@ -1,0 +1,19 @@
+
+Rules = Rule Rules | Rule;
+
+Rule = Target ASSIGN Branches EOL;
+
+Target = IDENTIFIER;
+
+Branches = Branch SPLITER Branches | Branch | ;
+
+Branch = Items;
+
+Items = Item Items | Item;
+
+Item = IDENTIFIER | Group | Item Quantifier;
+
+Group = BEGIN_GROUP Items END_GROUP;
+
+Quantifier = PLUS | TIMES | QUEST;
+
