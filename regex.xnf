@@ -3,9 +3,9 @@ Regexp = Branch SPLIT Regexp | Branch;
 Branch =  Object Branch | Object;
 Object = CHAR | Charset | Group | Quantified
        | NOT CHAR | NOT Charset | NOT Group;
-Charset = BEGIN_CHARSET CharsetUnitArray END_CHARSET;
-CharsetUnitArray = CharsetUnit CharsetUnitArray | CharsetUnit;
-CharsetUnit = CHAR | Range | Charset
+Charset = BEGIN_CHARSET UnitArray END_CHARSET;
+UnitArray = Unit UnitArray | Unit;
+Unit = CHAR | Range | Charset
             | NOT CHAR | NOT Range | NOT Charset;
 Group = BEGIN_GROUP Regexp END_GROUP;
 Quantified = Object Quantifier;
