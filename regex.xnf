@@ -8,8 +8,8 @@ UnitArray = Unit UnitArray | Unit;
 Unit = CHAR | Range | Charset | NOT CHAR | NOT Charset;
 Group = BEGIN_GROUP Regexp END_GROUP;
 Quantified = Object Quantifier;
-Quantifier = QUEST | PLUS | TIMES | NumQuantifier;
-NumQuantifier = BEGIN_QUANTIFIER NUMBER COMMA NUMBER END_QUANTIFIER
-              | BEGIN_QUANTIFIER NUMBER END_QUANTIFIER;
+Quantifier = QUEST | PLUS | TIMES
+           | BEGIN_QUANTIFIER NUMBER COMMA NUMBER END_QUANTIFIER
+           | BEGIN_QUANTIFIER NUMBER END_QUANTIFIER;
 Sequence = CHAR | CHAR Sequence;
 Range = CHAR MINUS CHAR;
