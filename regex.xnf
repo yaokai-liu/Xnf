@@ -1,5 +1,5 @@
 
-Regexp = Branch SPLIT Regexp | Branch;
+Regexp = Branch SPLIT Regexp | Branch |;
 Branch =  Object Branch | Object;
 Object = Sequence | Charset | Group | Quantified
        | NOT CHAR | NOT Charset | NOT Group;
