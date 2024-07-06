@@ -1,0 +1,17 @@
+
+Widgets = Widgets Widget | Widget | ;
+Widget = IDENTIFIER ASSIGN IDENTIFIER Arguments SubWidgets Settings SEMICOLON;
+Arguments = BEGIN_PARENTHESES ValueList END_PARENTHESES;
+SubWidgets = BEGIN_SQUARE Widgets END_SQUARE
+           | BEGIN_ANGLE Widgets END_ANGLE;
+Settings = BEGIN_BRACKET Statements END_BRACKET;
+ValueList = Expression COMMA ValueList | Expression |;
+Statements = Statements Statement | Statement | ;
+Statement = Called SEMICOLON
+          | Assignment SEMICOLON
+          | Controls;
+Called = EXCL_MARK IDENTIFIER Arguments;
+Assignment = ATTRIBUTE ASSIGN Arguments SubWidgets Settings
+           | ATTRIBUTE ASSIGN Expression
+           | LocalVar ASSIGN Expression;
+LocalVar = VAR IDENTIFIER | VAL IDENTIFIER;
