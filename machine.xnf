@@ -1,0 +1,26 @@
+Machine = MACHINE IDENTIFIER LEFT_BRACKET Entries RIGHT_BRACKET COMMA;
+Entries = Entries Entry | Entry;
+Entry = Register | Instruction | Memory | Immediate | Set;
+
+Register = REGISTER IDENTIFIER WIDTH LEFT_BRACKET RegisterItems RIGHT_BRACKET COMMA;
+Instruction = INSTRUCTION IDENTIFIER LEFT_BRACKET InstructionItems RIGHT_BRACKET COMMA;
+Memory = MEMORY IDENTIFIER WIDTH LEFT_BRACKET MemoryItems RIGHT_BRACKET COMMA;
+Immediate = IMMEDIATE IDENTIFIER WIDTH IDENTIFIER COMMA;
+Set = SET IDENTIFIER LEFT_BRACKET SetItems RIGHT_BRACKET COMMA;
+
+RegisterItems = RegisterItems | RegisterItem;
+InstructionItems = InstructionItems | InstructionItem;
+MemoryItems = MemoryItems | MemoryItem;
+SetItems = SetItems COMMA IDENTIFIER | IDENTIFIER;
+
+RegisterItem = ITEM_KEY COLON BITS EQUAL NUMBER COMMA;
+
+InstructionItem = Pattern EQUAL WIDTH NUMBER LEFT_BRACKET InstrDesItems RIGHT_BRACKET;
+InstrDesItems = InstrDesItems InstrDesItem;
+InstrDesItem = ITEM_KEY COLON WIDTH EQUAL Value COMMA;
+Value = ValueLiteral | LEFT_BRACKET ValueItems RIGHT_BRACKET;
+ValueItems = ValueItems ValueItem | ValueItem;
+ValueItem = BITS EQUAL ValueLiteral;
+ValueLiteral = NUMBER | IDENTIFIER | EVALUATION;
+
+MemoryItem = ITEM_KEY COLON BITS COMMA;
