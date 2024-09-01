@@ -15,7 +15,7 @@ SetItems = SetItems COMMA IDENTIFIER | IDENTIFIER;
 
 RegisterItem = ITEM_KEY COLON BITS EQUAL NUMBER COMMA;
 
-InstructionItem = Pattern EQUAL WIDTH NUMBER LEFT_BRACKET InstrDesItems RIGHT_BRACKET;
+InstructionItem = Pattern EQUAL WIDTH TICKS LEFT_BRACKET InstrDesItems RIGHT_BRACKET;
 InstrDesItems = InstrDesItems InstrDesItem;
 InstrDesItem = ITEM_KEY COLON WIDTH EQUAL Value COMMA;
 Value = ValueLiteral | LEFT_BRACKET ValueItems RIGHT_BRACKET;
