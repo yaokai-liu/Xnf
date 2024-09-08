@@ -1,26 +1,25 @@
-Machine = MACHINE IDENTIFIER LEFT_BRACKET Entries RIGHT_BRACKET COMMA;
+Machine = MACHINE IDENTIFIER LEFT_BRACKET Entries RIGHT_BRACKET SEMICOLON;
 Entries = Entries Entry | Entry;
-Entry = Register | Instruction | Memory | Immediate | Set;
+Entry = RegisterGroup | Instruction | Memory | Immediate | Set;
 
-Register = REGISTER IDENTIFIER WIDTH LEFT_BRACKET RegisterItems RIGHT_BRACKET COMMA;
-Instruction = INSTRUCTION IDENTIFIER LEFT_BRACKET InstructionItems RIGHT_BRACKET COMMA;
-Memory = MEMORY IDENTIFIER WIDTH LEFT_BRACKET MemoryItems RIGHT_BRACKET COMMA;
-Immediate = IMMEDIATE IDENTIFIER WIDTH IDENTIFIER COMMA;
-Set = SET IDENTIFIER LEFT_BRACKET SetItems RIGHT_BRACKET COMMA;
+RegisterGroup = REGISTER IDENTIFIER WIDTH LEFT_BRACKET Registers RIGHT_BRACKET SEMICOLON;
+Memory = MEMORY IDENTIFIER WIDTH LEFT_BRACKET MemItem MemItem RIGHT_BRACKET SEMICOLON;
+Instruction = INSTRUCTION IDENTIFIER LEFT_BRACKET InstrForms RIGHT_BRACKET SEMICOLON;
+Immediate = IMMEDIATE IDENTIFIER WIDTH TYPE SEMICOLON;
+Set = SET IDENTIFIER LEFT_BRACKET SetItems RIGHT_BRACKET SEMICOLON;
 
-RegisterItems = RegisterItems | RegisterItem;
-InstructionItems = InstructionItems | InstructionItem;
-MemoryItems = MemoryItems | MemoryItem;
+Registers = Registers | Register;
+InstrForms = InstrForms | InstrForm;
 SetItems = SetItems COMMA IDENTIFIER | IDENTIFIER;
 
-RegisterItem = ITEM_KEY COLON BITS EQUAL NUMBER COMMA;
+MemItem = MEM_KEY COLON BIT_FIELD SEMICOLON;
 
-InstructionItem = Pattern EQUAL WIDTH TICKS LEFT_BRACKET InstrDesItems RIGHT_BRACKET;
-InstrDesItems = InstrDesItems InstrDesItem;
-InstrDesItem = ITEM_KEY COLON WIDTH EQUAL Value COMMA;
-Value = ValueLiteral | LEFT_BRACKET ValueItems RIGHT_BRACKET;
-ValueItems = ValueItems ValueItem | ValueItem;
-ValueItem = BITS EQUAL ValueLiteral;
-ValueLiteral = NUMBER | IDENTIFIER | EVALUATION;
+Register = REG_KEY COLON BIT_FIELD EQUAL NUMBER SEMICOLON;
 
-MemoryItem = ITEM_KEY COLON BITS COMMA;
+InstrForm = PATTERN EQUAL WIDTH           LEFT_BRACKET InstrParts RIGHT_BRACKET SEMICOLON
+          | PATTERN EQUAL WIDTH TIME_TICK LEFT_BRACKET InstrParts RIGHT_BRACKET SEMICOLON;
+InstrParts = InstrParts InstrPart;
+InstrPart = PART_KEY COLON WIDTH EQUAL Layout SEMICOLON;
+Layout = EVALUATABLE | LEFT_BRACKET MappingItems RIGHT_BRACKET;
+MappingItems = MappingItems COMMA MappingItem | MappingItem;
+MappingItem = BIT_FIELD EQUAL EVALUATABLE;
