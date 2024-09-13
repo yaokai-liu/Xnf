@@ -19,14 +19,14 @@ Register = IDENTIFIER COLON BIT_FIELD EQUAL NUMBER SEMICOLON;
 InstrForm = Pattern EQUAL WIDTH           LEFT_BRACKET InstrParts RIGHT_BRACKET SEMICOLON
           | Pattern EQUAL WIDTH TIME_TICK LEFT_BRACKET InstrParts RIGHT_BRACKET SEMICOLON;
 
-Pattern = LEFT_SQUARE_BRACKET PatternItems RIGHT_SQUARE_BRACKET;
+Pattern = LEFT_SQUARE_BRACKET PatternArgs RIGHT_SQUARE_BRACKET;
 InstrParts = InstrParts InstrPart;
 InstrPart = PART_KEY COLON WIDTH EQUAL Layout SEMICOLON;
 Layout = Evaluable | LEFT_BRACKET MappingItems RIGHT_BRACKET;
 MappingItems = MappingItems COMMA MappingItem | MappingItem;
 MappingItem = BIT_FIELD EQUAL Evaluable;
 
-PatternItems = PatternItems COMMA IDENTIFIER
+PatternArgs = PatternArgs COMMA IDENTIFIER
              | IDENTIFIER;
 
 Evaluable = Evaluable DOT IDENTIFIER
