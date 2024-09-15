@@ -8,8 +8,8 @@ Instruction = INSTRUCTION IDENTIFIER LEFT_BRACKET InstrForms RIGHT_BRACKET SEMIC
 Immediate = IMMEDIATE IDENTIFIER WIDTH TYPE SEMICOLON;
 Set = SET IDENTIFIER LEFT_BRACKET SetItems RIGHT_BRACKET SEMICOLON;
 
-Registers = Registers | Register;
-InstrForms = InstrForms | InstrForm;
+Registers = Registers Register | Register;
+InstrForms = InstrForms InstrForm | InstrForm;
 SetItems = SetItems COMMA IDENTIFIER | IDENTIFIER;
 
 MemItem = MEM_KEY COLON BIT_FIELD SEMICOLON;
@@ -20,7 +20,7 @@ InstrForm = Pattern EQUAL WIDTH           LEFT_BRACKET InstrParts RIGHT_BRACKET 
           | Pattern EQUAL WIDTH TIME_TICK LEFT_BRACKET InstrParts RIGHT_BRACKET SEMICOLON;
 
 Pattern = LEFT_SQUARE_BRACKET PatternArgs RIGHT_SQUARE_BRACKET;
-InstrParts = InstrParts InstrPart;
+InstrParts = InstrParts InstrPart | InstrPart;
 InstrPart = PART_KEY COLON WIDTH EQUAL Layout SEMICOLON;
 Layout = Evaluable | LEFT_BRACKET MappingItems RIGHT_BRACKET;
 MappingItems = MappingItems COMMA MappingItem | MappingItem;
