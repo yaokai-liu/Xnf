@@ -29,7 +29,7 @@ MappingItem = BIT_FIELD EQUAL Evaluable;
 PatternArgs = PatternArgs COMMA IDENTIFIER
              | IDENTIFIER;
 
-Evaluable = Evaluable DOT IDENTIFIER
-          | Evaluable BIT_FIELD
+Evaluable = IDENTIFIER DOT MEM_KEY
+          | IDENTIFIER BIT_FIELD
           | IDENTIFIER
           | NUMBER;
