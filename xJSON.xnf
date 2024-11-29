@@ -1,0 +1,15 @@
+Object = LEFT_BRACKET Pairs RIGHT_BRACKET
+
+Pairs = Pair | Pairs COMMA Comments Pair | Pairs COMMA Pair
+
+Pair = KEY COLON Value | DOT KEY EQUAL Value
+
+Value = Object | List | NUMBER | TEXT
+
+List = BEGIN_SQUARE_BRACKET Values END_SQUARE_BRACKET
+
+Values = Value | Values COMMA value
+
+Comments = Comment | Comments Comment
+
+Comment = BEGIN_COMMENT TEXT END_COMMENT
