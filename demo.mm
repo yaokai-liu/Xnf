@@ -11,6 +11,10 @@ machine x64 {
     $: [6-11];
     >: [0-5];
   };
+  memory far [24-bit] {
+    $: [13-24];
+    >: [0-12];
+  };
   instruction mov {
     [gax, local] = [10-byte] (4-tick) {
       ^ : [8] = 0x56;
