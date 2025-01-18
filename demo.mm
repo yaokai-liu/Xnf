@@ -28,4 +28,9 @@ machine x64 {
       };
     };
   };
+  instruction mattv {
+      [] = [1-byte] {
+        ~: [8] = 0x20;
+    };
+  };
 };
