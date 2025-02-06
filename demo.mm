@@ -24,36 +24,36 @@ machine x64 {
   };
   set gpr {gax, gbx};
   instruction mov {
-    [gpr, local] = [10-byte] (4-tick) {
+    [gpr g, local l] = [10-byte] (4-tick) {
       ^ : [8] = 0x56;
       & : [8] = 0x37;
       ~ : [64] = {
-        [0-5] = local.$,
-        [63-56] = gpr,
-        [16-11] = local.>,
-        [23-31] = gpr,
+        [0-5] = l.$,
+        [63-56] = g,
+        [16-11] = l.>,
+        [23-31] = g,
         [...] = 0
       };
     };
-    [gax, local, far] = [10-byte] (4-tick) {
+    [gax g, local l, far f] = [10-byte] (4-tick) {
       ^ : [8] = 0x56;
       & : [8] = 0x37;
       ~ : [64] = {
-        [0-5] = local.$,
-        [63-56] = gax,
-        [16-11] = local.>,
-        [23-31] = gax,
+        [0-5] = l.$,
+        [63-56] = g,
+        [16-11] = l.>,
+        [23-31] = g,
         [...] = 0
       };
     };
-    [local, gax, far] = [10-byte] (4-tick) {
+    [local l, gax g, far f] = [10-byte] (4-tick) {
       ^ : [8] = 0x56;
       & : [8] = 0x37;
       ~ : [64] = {
-        [0-5] = local.$,
-        [63-56] = gax,
-        [16-11] = local.>,
-        [23-31] = gax,
+        [0-5] = l.$,
+        [63-56] = g,
+        [16-11] = l.>,
+        [23-31] = g,
         [...] = 0
       };
     };

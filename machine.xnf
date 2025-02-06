@@ -27,8 +27,10 @@ Layout = Evaluable | LEFT_BRACKET MappingItems RIGHT_BRACKET;
 MappingItems = MappingItems COMMA MappingItem | MappingItem;
 MappingItem = BIT_FIELD EQUAL Evaluable;
 
-PatternArgs = PatternArgs COMMA IDENTIFIER
-             | IDENTIFIER;
+PatternArgs = PatternArgs COMMA Parameter
+             | Parameter;
+
+Parameter = IDENTIFIER IDENTIFIER;
 
 Evaluable = IDENTIFIER DOT MEM_KEY
           | IDENTIFIER BIT_FIELD
