@@ -47,9 +47,9 @@ machine x64 {
       };
     };
     [local l, gax g, far f] = [10-byte] (4-tick) {
-      ^ : [8] = 0x56;
-      & : [8] = 0x37;
-      ~ : [64] = {
+      prefix : [8] = 0x56;
+      principal : [8] = 0x37;
+      suffix : [64] = {
         [0-5] = l.$,
         [63-56] = g,
         [16-11] = l.>,
