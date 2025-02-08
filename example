@@ -15,12 +15,13 @@ machine x64 {
   };
   immediate refer [23-bit] unsigned;
   memory local [12-bit] {
-    $: [6-11];
-    >: [0-5];
+    base: [6-11];
+    offset: [0-5];
   };
-  memory far [24-bit] {
-    $: [13-24];
-    >: [0-12];
+  memory far [32-bit] {
+    base: [13-24];
+    index: [0-12] = gax;
+    scale: [25-31];
   };
   set gpr {gax, gbx};
   instruction mov {
