@@ -41,6 +41,7 @@ CondExpr = CondExpr BOOL_BIN_OP SingleCondExpr
 
 SingleCondExpr = LEFT_PAREN CondExpr RIGHT_PAREN
                | Evaluable COND_BIN_OP Evaluable
+               | Evaluable IN IDENTIFIER
                | COND_SINGLE_OP Evaluable;
 
 
