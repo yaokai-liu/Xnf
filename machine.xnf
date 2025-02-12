@@ -26,23 +26,29 @@ Pattern = LEFT_SQUARE_BRACKET PatternArgs RIGHT_SQUARE_BRACKET
 InstrParts = InstrParts InstrPart | InstrPart;
 InstrPart = IDENTIFIER COLON WIDTH EQUAL Layout SEMICOLON
           | IDENTIFIER COLON WIDTH EQUAL Layout Condition SEMICOLON;
-Layout = Evaluable | LEFT_BRACKET MappingItems RIGHT_BRACKET;
+Layout = Evaluable | Switchable | LEFT_BRACKET MappingItems RIGHT_BRACKET;
 MappingItems = MappingItems COMMA MappingItem | MappingItem;
-MappingItem = BIT_FIELD EQUAL Evaluable;
+MappingItem = BIT_FIELD EQUAL Evaluable
+            | BIT_FIELD EQUAL Switchable;
 
+Switchable = LEFT_PAREN CondExpr RIGHT_PAREN QUESTION_MARK Options;
 PatternArgs = PatternArgs COMMA Parameter
             | Parameter;
 Condition = AT LEFT_PAREN CondExpr RIGHT_PAREN;
 
+Options = Options COLON Evaluable | Evaluable;
 Parameter = IDENTIFIER IDENTIFIER;
-CondExpr = CondExpr BOOL_BIN_OP SingleCondExpr
-         | BOOL_SINGLE_OP SingleCondExpr
-         | SingleCondExpr;
+CondExpr = CondExpr BOOL_OR AndCondExpr
+         | AndCondExpr;
+
+AndCondExpr = AndCondExpr BOOL_AND SingleCondExpr
+            | SingleCondExpr;
 
 SingleCondExpr = LEFT_PAREN CondExpr RIGHT_PAREN
-               | Evaluable COND_BIN_OP Evaluable
+               | BOOL_NOT SingleCondExpr
+               | Evaluable BIN_OP Evaluable
                | Evaluable IN IDENTIFIER
-               | COND_SINGLE_OP Evaluable;
+               | SINGLE_OP Evaluable;
 
 
 Evaluable = Variable BIT_FIELD | Variable | NUMBER;
