@@ -14,29 +14,29 @@ SetItems = SetItems COMMA IDENTIFIER | IDENTIFIER;
 MemItems = MemItems MemItem | MemItem;
 
 MemItem = IDENTIFIER COLON WIDTH SEMICOLON
-        | IDENTIFIER COLON WIDTH EQUAL IDENTIFIER SEMICOLON;
+        | IDENTIFIER COLON WIDTH ASSIGN IDENTIFIER SEMICOLON;
 
-Register = IDENTIFIER COLON BIT_FIELD EQUAL NUMBER SEMICOLON;
+Register = IDENTIFIER COLON BIT_FIELD ASSIGN NUMBER SEMICOLON;
 
-InstrForm = Pattern EQUAL           LEFT_BRACKET InstrParts RIGHT_BRACKET SEMICOLON
-          | Pattern EQUAL TIME_TICK LEFT_BRACKET InstrParts RIGHT_BRACKET SEMICOLON;
+InstrForm = Pattern ASSIGN           LEFT_BRACKET InstrParts RIGHT_BRACKET SEMICOLON
+          | Pattern ASSIGN TIME_TICK LEFT_BRACKET InstrParts RIGHT_BRACKET SEMICOLON;
 
 Pattern = LEFT_SQUARE_BRACKET PatternArgs RIGHT_SQUARE_BRACKET
         | LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET;
 InstrParts = InstrParts InstrPart | InstrPart;
-InstrPart = IDENTIFIER COLON WIDTH EQUAL Layout SEMICOLON
-          | IDENTIFIER COLON WIDTH EQUAL Layout Condition SEMICOLON;
-Layout = Evaluable | Switchable | LEFT_BRACKET MappingItems RIGHT_BRACKET;
+InstrPart = IDENTIFIER COLON WIDTH ASSIGN Layout SEMICOLON
+          | IDENTIFIER COLON WIDTH ASSIGN Layout Condition SEMICOLON;
+Layout = Arith_0_Expr | Switchable | LEFT_BRACKET MappingItems RIGHT_BRACKET;
 MappingItems = MappingItems COMMA MappingItem | MappingItem;
-MappingItem = BIT_FIELD EQUAL Evaluable
-            | BIT_FIELD EQUAL Switchable;
+MappingItem = BIT_FIELD ASSIGN Arith_0_Expr
+            | BIT_FIELD ASSIGN Switchable;
 
 Switchable = LEFT_PAREN CondExpr RIGHT_PAREN QUESTION_MARK Options;
 PatternArgs = PatternArgs COMMA Parameter
             | Parameter;
 Condition = AT LEFT_PAREN CondExpr RIGHT_PAREN;
 
-Options = Options COLON Evaluable | Evaluable;
+Options = Options COLON Arith_0_Expr | Arith_0_Expr;
 Parameter = IDENTIFIER IDENTIFIER;
 CondExpr = CondExpr BOOL_OR AndCondExpr
          | AndCondExpr;
@@ -46,10 +46,22 @@ AndCondExpr = AndCondExpr BOOL_AND SingleCondExpr
 
 SingleCondExpr = LEFT_PAREN CondExpr RIGHT_PAREN
                | BOOL_NOT SingleCondExpr
-               | Evaluable BIN_OP Evaluable
+               | Arith_0_Expr COND_BIN_OP Arith_0_Expr
                | Variable IN IDENTIFIER
-               | SINGLE_OP Evaluable;
+               | COND_SIN_OP Arith_0_Expr;
 
+Arith_0_Expr = Arith_0_Expr ARITH_0_BIN_OP Arith_1_Expr
+             | ARITH_0_SIN_OP Arith_0_Expr
+             | Arith_1_Expr;
+Arith_1_Expr = Arith_1_Expr ARITH_1_BIN_OP Arith_2_Expr
+             | ARITH_1_SIN_OP Arith_1_Expr
+             | Arith_2_Expr;
+Arith_2_Expr = Arith_2_Expr ARITH_2_BIN_OP Arith_3_Expr
+             | ARITH_2_SIN_OP Arith_2_Expr
+             | Arith_3_Expr;
+Arith_3_Expr = LEFT_PAREN CondExpr RIGHT_PAREN
+             | ARITH_3_SIN_OP Arith_3_Expr
+             | Evaluable;
 
 Evaluable = Variable BIT_FIELD | Variable | NUMBER;
 
