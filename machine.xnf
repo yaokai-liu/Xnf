@@ -59,7 +59,7 @@ Arith_1_Expr = Arith_1_Expr ARITH_1_BIN_OP Arith_2_Expr
 Arith_2_Expr = Arith_2_Expr ARITH_2_BIN_OP Arith_3_Expr
              | ARITH_2_SIN_OP Arith_2_Expr
              | Arith_3_Expr;
-Arith_3_Expr = LEFT_PAREN CondExpr RIGHT_PAREN
+Arith_3_Expr = LEFT_PAREN Arith_0_Expr RIGHT_PAREN
              | ARITH_3_SIN_OP Arith_3_Expr
              | Evaluable;
 
