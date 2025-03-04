@@ -18,11 +18,12 @@ MemItem = IDENTIFIER COLON WIDTH SEMICOLON
 
 Register = IDENTIFIER COLON BIT_FIELD ASSIGN NUMBER SEMICOLON;
 
-InstrForm = Pattern ASSIGN           LEFT_BRACKET InstrParts RIGHT_BRACKET SEMICOLON
-          | Pattern ASSIGN TIME_TICK LEFT_BRACKET InstrParts RIGHT_BRACKET SEMICOLON;
+InstrForm = Pattern ASSIGN           LEFT_BRACKET FormCheck InstrParts RIGHT_BRACKET SEMICOLON
+          | Pattern ASSIGN TIME_TICK LEFT_BRACKET FormCheck InstrParts RIGHT_BRACKET SEMICOLON;
 
 Pattern = LEFT_SQUARE_BRACKET PatternArgs RIGHT_SQUARE_BRACKET
         | LEFT_SQUARE_BRACKET RIGHT_SQUARE_BRACKET;
+FormCheck = Condition SEMICOLON | ;
 InstrParts = InstrParts InstrPart | InstrPart;
 InstrPart = IDENTIFIER COLON WIDTH ASSIGN Layout SEMICOLON
           | IDENTIFIER COLON WIDTH ASSIGN Layout Condition SEMICOLON;
@@ -63,6 +64,6 @@ Arith_3_Expr = LEFT_PAREN Arith_0_Expr RIGHT_PAREN
              | ARITH_3_SIN_OP Arith_3_Expr
              | Evaluable;
 
-Evaluable = Variable BIT_FIELD | Variable | NUMBER;
+Evaluable = Variable BIT_FIELD | OP_WIDTH Variable | Variable | NUMBER;
 
 Variable = IDENTIFIER DOT IDENTIFIER | IDENTIFIER;
