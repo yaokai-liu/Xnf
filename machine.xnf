@@ -47,9 +47,10 @@ AndCondExpr = AndCondExpr BOOL_AND SingleCondExpr
 
 SingleCondExpr = LEFT_PAREN CondExpr RIGHT_PAREN
                | BOOL_NOT SingleCondExpr
-               | Arith_0_Expr COND_BIN_OP Arith_0_Expr
+               | SingleCondExpr COND_BIN_OP SingleCondExpr
                | Variable IN IDENTIFIER
-               | COND_SIN_OP Arith_0_Expr;
+               | COND_SIN_OP Arith_0_Expr
+               | Arith_0_Expr;
 
 Arith_0_Expr = Arith_0_Expr ARITH_0_BIN_OP Arith_1_Expr
              | ARITH_0_SIN_OP Arith_0_Expr
