@@ -1,21 +1,17 @@
 Machine = MACHINE IDENTIFIER LEFT_BRACKET Entries RIGHT_BRACKET SEMICOLON;
 Entries = Entries Entry | Entry;
-Entry = RealEntry | Macro | MacroApp | Set;
-RealEntry = RegisterGroup | Instruction | Memory | Immediate;
+Entry = RegisterGroup | Instruction | Memory | Immediate | Set;
 
 RegisterGroup = REGISTER IDENTIFIER WIDTH LEFT_BRACKET Registers RIGHT_BRACKET SEMICOLON;
 Memory = MEMORY IDENTIFIER WIDTH LEFT_BRACKET MemItems RIGHT_BRACKET SEMICOLON;
 Instruction = INSTRUCTION IDENTIFIER LEFT_BRACKET InstrForms RIGHT_BRACKET SEMICOLON;
 Immediate = IMMEDIATE IDENTIFIER WIDTH TYPE SEMICOLON;
 Set = SET IDENTIFIER LEFT_BRACKET SetItems RIGHT_BRACKET SEMICOLON;
-Macro = MACRO IDENTIFIER LEFT_PAREN MacroParams RIGHT_PAREN RealEntry;
-MacroApp = IDENTIFIER LEFT_PAREN MacroParams RIGHT_PAREN SEMICOLON;
 
 Registers = Registers Register | Register;
 InstrForms = InstrForms InstrForm | InstrForm;
 SetItems = SetItems COMMA IDENTIFIER | IDENTIFIER;
 MemItems = MemItems MemItem | MemItem;
-MacroParams = MacroParams COMMA IDENTIFIER | IDENTIFIER;
 
 MemItem = IDENTIFIER COLON WIDTH SEMICOLON
         | IDENTIFIER COLON WIDTH ASSIGN IDENTIFIER SEMICOLON;
