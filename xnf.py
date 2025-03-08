@@ -342,6 +342,11 @@ class Parser(object):
         self._error = None
         self.name = name
 
+    def clear(self):
+        self.__init__(self.name,
+                      lexer=self.__LEXER__,
+                      lineno=self.lineno,
+                      column=self.column)
     @property
     def tokens(self):
         return self.__TOKENS__
