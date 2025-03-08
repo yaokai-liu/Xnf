@@ -17,4 +17,8 @@ if __name__ == '__main__':
         compact = True
     with open(__dir__ / 'machine.xnf', 'r', encoding='utf-8') as f:
         XNF_PARSER.set_rules(f.read(), start='Machine')
-    XNF_PARSER.dump(cfd, compact=compact)
+    XNF_PARSER.dump(cfd / 'machine', compact=compact)
+    XNF_PARSER.clear()
+    with open(__dir__ / 'macro.xnf', 'r', encoding='utf-8') as f:
+        XNF_PARSER.set_rules(f.read(), start='Entry')
+    XNF_PARSER.dump(cfd / 'macro', compact=compact)

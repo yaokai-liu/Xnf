@@ -1,0 +1,12 @@
+Entry = Macro | MacroCall;
+
+Macro = MACRO IDENTIFIER LEFT_PAREN MacroParams RIGHT_PAREN Tokens SEMICOLON;
+MacroCall = IDENTIFIER LEFT_PAREN MacroArgs RIGHT_PAREN SEMICOLON;
+
+MacroParams = MacroParams COMMA IDENTIFIER | IDENTIFIER | ;
+MacroArgs = MacroArgs COMMA MacroArg | MacroArg | ;
+
+MacroArg = Tokens | IDENTIFIER;
+
+Tokens = Tokens Token | Token;
+Token = LEFT_BRACKET Tokens LEFT_BRACKET | TOKEN;
