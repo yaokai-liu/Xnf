@@ -6,6 +6,6 @@ MacroCall = IDENTIFIER LEFT_PAREN MacroArgs RIGHT_PAREN;
 MacroParams = MacroParams COMMA IDENTIFIER | IDENTIFIER | ;
 MacroArgs = MacroArgs COMMA MacroArg | MacroArg | ;
 
-MacroArg = LEFT_BRACKET Tokens RIGHT_BRACKET | IDENTIFIER;
+MacroArg = LEFT_BRACKET Tokens RIGHT_BRACKET | IDENTIFIER | NUMBER;
 
 Tokens = Tokens TOKEN | TOKEN;
