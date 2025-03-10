@@ -1,4 +1,4 @@
-Entry = Macro | MacroCall;
+MacroEntry = Macro | MacroCall;
 
 Macro = MACRO IDENTIFIER LEFT_PAREN MacroParams RIGHT_PAREN LEFT_BRACKET Tokens RIGHT_BRACKET;
 MacroCall = IDENTIFIER LEFT_PAREN MacroArgs RIGHT_PAREN;

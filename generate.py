@@ -20,5 +20,5 @@ if __name__ == '__main__':
     XNF_PARSER.dump(cfd / 'machine', compact=compact)
     XNF_PARSER.clear()
     with open(__dir__ / 'macro.xnf', 'r', encoding='utf-8') as f:
-        XNF_PARSER.set_rules(f.read(), start='Entry')
+        XNF_PARSER.set_rules(f.read(), start='MacroEntry')
     XNF_PARSER.dump(cfd / 'macro', compact=compact)
