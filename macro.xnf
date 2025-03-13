@@ -8,4 +8,6 @@ MacroArgs = MacroArgs COMMA MacroArg | MacroArg | ;
 
 MacroArg = LEFT_BRACKET Tokens RIGHT_BRACKET | IDENTIFIER | NUMBER;
 
-Tokens = Tokens TOKEN | TOKEN;
+Tokens = Tokens TOKEN | Tokens Concat | TOKEN | Concat;
+
+Concat = TOKEN CONCAT TOKEN;
