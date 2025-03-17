@@ -1,12 +1,12 @@
 Machine = MACHINE IDENTIFIER LEFT_BRACKET Entries RIGHT_BRACKET SEMICOLON;
 Entries = Entries Entry | Entry;
-Entry = RegisterGroup | Instruction | Memory | Immediate | Set;
+Entry = RegisterGroup | Instruction | Memory | Immediate | EntrySet;
 
 RegisterGroup = REGISTER IDENTIFIER WIDTH LEFT_BRACKET Registers RIGHT_BRACKET SEMICOLON;
 Memory = MEMORY IDENTIFIER WIDTH LEFT_BRACKET MemItems RIGHT_BRACKET SEMICOLON;
 Instruction = INSTRUCTION IDENTIFIER LEFT_BRACKET InstrForms RIGHT_BRACKET SEMICOLON;
 Immediate = IMMEDIATE IDENTIFIER WIDTH TYPE SEMICOLON;
-Set = SET IDENTIFIER LEFT_BRACKET SetItems RIGHT_BRACKET SEMICOLON;
+EntrySet = SET IDENTIFIER LEFT_BRACKET SetItems RIGHT_BRACKET SEMICOLON;
 
 Registers = Registers Register | Register;
 InstrForms = InstrForms InstrForm | InstrForm;
