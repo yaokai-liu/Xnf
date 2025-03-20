@@ -6,7 +6,13 @@ RegisterGroup = REGISTER IDENTIFIER WIDTH LEFT_BRACKET Registers RIGHT_BRACKET S
 Memory = MEMORY IDENTIFIER WIDTH LEFT_BRACKET MemItems RIGHT_BRACKET SEMICOLON;
 Instruction = INSTRUCTION IDENTIFIER LEFT_BRACKET InstrForms RIGHT_BRACKET SEMICOLON;
 Immediate = IMMEDIATE IDENTIFIER WIDTH TYPE SEMICOLON;
-EntrySet = SET IDENTIFIER LEFT_BRACKET SetItems RIGHT_BRACKET SEMICOLON;
+EntrySet = SET IDENTIFIER SetExpr SEMICOLON;
+
+SetExpr = LEFT_PAREN SetExpr RIGHT_PAREN
+        | SetExpr ARITH_2_BIN_OP IDENTIFIER
+        | SetExpr ARITH_2_BIN_OP LEFT_BRACKET SetItems RIGHT_BRACKET
+        | LEFT_BRACKET SetItems RIGHT_BRACKET
+        | IDENTIFIER;
 
 Registers = Registers Register | Register;
 InstrForms = InstrForms InstrForm | InstrForm;
@@ -39,6 +45,8 @@ Condition = AT LEFT_PAREN CondExpr RIGHT_PAREN;
 
 Options = Options COLON Arith_0_Expr | Arith_0_Expr;
 Parameter = IDENTIFIER IDENTIFIER;
+
+
 CondExpr = CondExpr BOOL_OR AndCondExpr
          | AndCondExpr;
 
