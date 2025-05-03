@@ -1,12 +1,12 @@
-Machine = MACHINE IDENTIFIER LEFT_BRACKET Entries RIGHT_BRACKET;
-Entries = Entries Entry | Entry;
-Entry = RegisterGroup | Instruction | Memory | Immediate | EntrySet;
+Machine = MACHINE IDENTIFIER LEFT_BRACKET GrammarEntries RIGHT_BRACKET;
+GrammarEntries = GrammarEntries GrammarEntry | GrammarEntry;
+GrammarEntry = RegisterGroup | Instruction | Memory | Immediate | RecordSet;
 
 RegisterGroup = REGISTER IDENTIFIER WIDTH LEFT_BRACKET Registers RIGHT_BRACKET;
 Memory = MEMORY IDENTIFIER WIDTH LEFT_BRACKET MemItems RIGHT_BRACKET;
 Instruction = INSTRUCTION IDENTIFIER LEFT_BRACKET InstrForms RIGHT_BRACKET;
 Immediate = IMMEDIATE IDENTIFIER WIDTH TYPE SEMICOLON;
-EntrySet = SET IDENTIFIER SetExpr SEMICOLON;
+RecordSet = SET IDENTIFIER SetExpr SEMICOLON;
 
 SetExpr = LEFT_PAREN SetExpr RIGHT_PAREN
         | SetExpr ARITH_2_BIN_OP IDENTIFIER
