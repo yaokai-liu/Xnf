@@ -1,9 +1,10 @@
 
 Regexp = Regexp SPLIT Branch | Branch |;
 Branch = Branch Object | Object;
-Object = Sequence | Charset | Group | Quantified
-       | NOT CHAR | NOT Charset | NOT Group;
-Charset = BEGIN_CHARSET UnitArray END_CHARSET;
+Object = CHAR | Charset | Group | Quantified
+       | NOT CHAR | NOT Charset | NOT Group
+       | ASSERT Object;
+Charset = BEGIN_CHARSET UnitArray END_CHARSET | SET_ESCAPE;
 UnitArray = UnitArray Unit | Unit;
 Unit = CHAR | Range | Charset | NOT CHAR | NOT Charset;
 Group = BEGIN_GROUP Regexp END_GROUP;
@@ -13,5 +14,4 @@ Quantifier = QUEST | PLUS | TIMES
            | BEGIN_QUANTIFIER NUMBER COMMA END_QUANTIFIER
            | BEGIN_QUANTIFIER COMMA NUMBER END_QUANTIFIER
            | BEGIN_QUANTIFIER NUMBER END_QUANTIFIER;
-Sequence = CHAR | Sequence CHAR;
 Range = CHAR MINUS CHAR;
