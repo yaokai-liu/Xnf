@@ -16,6 +16,6 @@ if __name__ == '__main__':
     else:
         compact = True
     with open(__dir__ / 'regex.xnf', 'r', encoding='utf-8') as f:
-        XNF_PARSER.set_rules(f.read(), start='Regexp')
+        XNF_PARSER.set_rules(f.read(), start='Regex')
     XNF_PARSER.dump(cfd / 'regex', compact=compact)
 
