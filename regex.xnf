@@ -1,12 +1,15 @@
 
 Regex = Regex SPLIT Branch | Branch |;
 Branch = Branch Object | Object;
-Object = CHAR | Charset | Group | Quantified
-       | INVERSE CHAR | INVERSE Charset | INVERSE Group
-       | EXCLAIMA Object;
+
+Object = Assertion | Quantified | Affixed | Element;
+Assertion = EXCLAIMA Quantified | EXCLAIMA Affixed | EXCLAIMA Element;
+Quantified = Affixed QUANTIFIER | Element QUANTIFIER;
+Affixed = INVERSE Element;
+
+Element = CHAR | Charset | Group;
 Charset = LEFT_SQUARE_BRACKET UnitArray RIGHT_SQUARE_BRACKET | CHARSET_ESCAPE;
 UnitArray = UnitArray Unit | Unit;
 Unit = CHAR | Range | Charset | INVERSE CHAR | INVERSE Charset;
 Group = LEFT_PARENTHESIS Regex RIGHT_PARENTHESIS;
-Quantified = Object QUANTIFIER;
 Range = CHAR MINUS CHAR;
