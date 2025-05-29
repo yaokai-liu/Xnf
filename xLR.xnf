@@ -1,0 +1,83 @@
+
+GrammarEntry = TargetDefinition SEMICOLON | RuleDefinition;
+
+TargetDefinition = TOKEN IDENTIFIER LEFT_BRACKET DefItems RIGHT_BRACKET;
+RuleDefinition = TargetDefinition IDENTIFIER GrammarPattern GrammarAction
+               | IDENTIFIER       IDENTIFIER GrammarPattern GrammarAction;
+
+DefItems = DefItems DefItem;
+DefItem = IDENTIFIER IDENTIFIER SEMICOLON
+        | BUILTIN_TYPE IDENTIFIER SEMICOLON
+        | IDENTIFIER IDENTIFIER LEFT_SQUARE_BRACKET ArithExpr RIGHT_SQUARE_BRACKET SEMICOLON
+        | BUILTIN_TYPE IDENTIFIER LEFT_SQUARE_BRACKET ArithExpr RIGHT_SQUARE_BRACKET SEMICOLON;
+
+GrammarPattern = LEFT_PARENTHESIS GrammarItems RIGHT_PARENTHESIS;
+GrammarItems = GrammarItems GrammarItem | GrammarItems | ;
+GrammarItem = QuantifiedItem | Item;
+QuantifiedItem = Item QUANTIFIER;
+Item = IDENTIFIER | ItemGroup;
+ItemGroup = LEFT_PARENTHESIS GrammarItems RIGHT_PARENTHESIS;
+
+GrammarAction = LEFT_BRACKET ActionStatements RIGHT_BRACKET;
+
+ActionStatements = ActionStatements ActionStatement | ActionStatement | ;
+
+ActionStatement = CondStatement | ActionBlock | Declaration SEMICOLON | AssignExpr SEMICOLON;
+
+CondStatement = IfStatement | ForStatement | WhileStatement | CondStatement ELSE ActionStatement;
+
+IfStatement = IF IfCondition ActionStatement;
+ForStatement = FOR ForCondition ActionStatement;
+WhileStatement = WHILE IfCondition ActionStatement;
+ActionBlock = LEFT_BRACKET ActionStatements RIGHT_BRACKET;
+
+IfCondition = LEFT_PARENTHESIS CondExpr RIGHT_PARENTHESIS;
+ForCondition = LEFT_PARENTHESIS OptionalAssignExpr SEMICOLON OptionalCondExpr SEMICOLON OptionalAssignExpr RIGHT_PARENTHESIS;
+
+OptionalAssignExpr = AssignExpr | ;
+OptionalCondExpr = CondExpr | ;
+
+CondExpr = CondExpr BOOL_OR AndCondExpr | AndCondExpr;
+
+AndCondExpr = AndCondExpr BOOL_AND SingleCondExpr | SingleCondExpr;
+
+SingleCondExpr = BOOL_NOT SingleCondExpr
+               | SingleCondExpr COND_BIN_OP SingleCondExpr
+               | COND_SIN_OP ArithExpr
+               | ArithExpr;
+
+Declaration = IDENTIFIER IDENTIFIER
+            | IDENTIFIER IDENTIFIER ASSIGNER ArithExpr;
+
+AssignExpr = Assignable ASSIGNER ArithExpr
+           | INTEGRATED_AHEAD_OP IntegratedExpr
+           | IntegratedExpr INTEGRATED_FOLLOW_OP;
+
+ArithExpr = Arith_0_Expr | AssignExpr | LEFT_PARENTHESIS CondExpr RIGHT_PARENTHESIS;
+
+Arith_0_Expr = Arith_0_Expr ARITH_0_BIN_OP Arith_1_Expr
+             | ARITH_0_SIN_OP Arith_0_Expr
+             | Arith_1_Expr;
+Arith_1_Expr = Arith_1_Expr ARITH_1_BIN_OP Arith_2_Expr
+             | ARITH_1_SIN_OP Arith_1_Expr
+             | Arith_2_Expr;
+Arith_2_Expr = Arith_2_Expr ARITH_2_BIN_OP Arith_3_Expr
+             | ARITH_2_SIN_OP Arith_2_Expr
+             | Arith_3_Expr;
+Arith_3_Expr = Arith_3_Expr ARITH_3_BIN_OP Arith_4_Expr
+             | ARITH_3_SIN_OP Arith_4_Expr
+             | Arith_4_Expr;
+Arith_4_Expr = ARITH_4_SIN_OP Arith_4_Expr
+             | Evaluable;
+
+Evaluable = IntegratedExpr | FunctionCall | BUILTIN_VARIABLE | NUMBER;
+
+Assignable = IDENTIFIER | Accessed | Subscribed;
+Accessed = IntegratedExpr DOT IDENTIFIER;
+Subscribed = IntegratedExpr LEFT_SQUARE_BRACKET ArithExpr RIGHT_SQUARE_BRACKET;
+
+IntegratedExpr = LEFT_PARENTHESIS ArithExpr RIGHT_PARENTHESIS | Assignable;
+
+FunctionCall = IntegratedExpr LEFT_PARENTHESIS Arguments RIGHT_PARENTHESIS;
+
+Arguments = Arguments COMMA ArithExpr | Argument | ;
