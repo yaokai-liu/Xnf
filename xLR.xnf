@@ -1,22 +1,23 @@
 
-GrammarEntry = TargetDefinition SEMICOLON | RuleDefinition;
+GrammarEntry = TokenDefinition SEMICOLON | RuleDefinition;
 
-TargetDefinition = TOKEN IDENTIFIER LEFT_BRACKET DefItems RIGHT_BRACKET;
-RuleDefinition = TargetDefinition IDENTIFIER GrammarPattern GrammarAction
-               | IDENTIFIER       IDENTIFIER GrammarPattern GrammarAction;
+TokenDefinition = TOKEN IDENTIFIER LEFT_BRACKET Declarations RIGHT_BRACKET;
+RuleDefinition = TokenDefinition IDENTIFIER GrammarPattern GrammarAction
+               | IDENTIFIER      IDENTIFIER GrammarPattern GrammarAction;
 
-DefItems = DefItems DefItem;
-DefItem = IDENTIFIER IDENTIFIER SEMICOLON
-        | BUILTIN_TYPE IDENTIFIER SEMICOLON
-        | IDENTIFIER IDENTIFIER LEFT_SQUARE_BRACKET ArithExpr RIGHT_SQUARE_BRACKET SEMICOLON
-        | BUILTIN_TYPE IDENTIFIER LEFT_SQUARE_BRACKET ArithExpr RIGHT_SQUARE_BRACKET SEMICOLON;
+Declarations = Declarations Declaration | Declaration;
+Declaration = DecItem SEMICOLON
+            | DecItem ASSIGNER ArithExpr;
+DecItem = IDENTIFIER IDENTIFIER
+        | BUILTIN_TYPE IDENTIFIER
+        | IDENTIFIER IDENTIFIER LEFT_SQUARE_BRACKET ArithExpr RIGHT_SQUARE_BRACKET
+        | BUILTIN_TYPE IDENTIFIER LEFT_SQUARE_BRACKET ArithExpr RIGHT_SQUARE_BRACKET;
 
 GrammarPattern = LEFT_PARENTHESIS GrammarItems RIGHT_PARENTHESIS;
 GrammarItems = GrammarItems GrammarItem | GrammarItems | ;
-GrammarItem = QuantifiedItem | Item;
-QuantifiedItem = Item QUANTIFIER;
-Item = IDENTIFIER | ItemGroup;
-ItemGroup = LEFT_PARENTHESIS GrammarItems RIGHT_PARENTHESIS;
+GrammarItem = LEFT_PARENTHESIS GrammarItems RIGHT_PARENTHESIS
+            | GrammarItem QUANTIFIER
+            | IDENTIFIER;
 
 GrammarAction = LEFT_BRACKET ActionStatements RIGHT_BRACKET;
 
@@ -45,9 +46,6 @@ SingleCondExpr = BOOL_NOT SingleCondExpr
                | SingleCondExpr COND_BIN_OP SingleCondExpr
                | COND_SIN_OP ArithExpr
                | ArithExpr;
-
-Declaration = IDENTIFIER IDENTIFIER
-            | IDENTIFIER IDENTIFIER ASSIGNER ArithExpr;
 
 AssignExpr = Assignable ASSIGNER ArithExpr
            | INTEGRATED_AHEAD_OP IntegratedExpr
@@ -80,4 +78,4 @@ IntegratedExpr = LEFT_PARENTHESIS ArithExpr RIGHT_PARENTHESIS | Assignable;
 
 FunctionCall = IntegratedExpr LEFT_PARENTHESIS Arguments RIGHT_PARENTHESIS;
 
-Arguments = Arguments COMMA ArithExpr | Argument | ;
+Arguments = Arguments COMMA ArithExpr | ArithExpr | ;
