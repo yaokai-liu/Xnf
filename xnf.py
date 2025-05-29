@@ -129,7 +129,7 @@ class Lexer(object):
                 column += _i
             if _n:
                 _input = _input[_n:]
-                lineno, column = lineno + 1, 0
+                lineno, column = lineno + _n, 1
             _i, _n = len(ignore(_input)), len(newline(_input))
 
         return _input, lineno, column
@@ -142,7 +142,7 @@ class Lexer(object):
 
     def __match(self, _input, **kwargs):
         self.lineno = kwargs.get('lineno') or 0
-        self.column = kwargs.get('colpos') or 0
+        self.column = kwargs.get('column') or 0
         if kwargs.get('mode') == 'longest':
             result, _type = None, None
             for p in sorted(self.__PRIORITIES__.keys(), reverse=True):
@@ -173,7 +173,7 @@ class Lexer(object):
         if not token:
             return self.__match(_input)
         self.lineno = kwargs.get('lineno') or 0
-        self.column = kwargs.get('colpos') or 0
+        self.column = kwargs.get('column') or 0
         if token == '_LITERAL_':
             if self.literal_patterns.match(_input):
                 res = self.literal_patterns.match(_input)
@@ -183,8 +183,8 @@ class Lexer(object):
         return self.__TOKENS__[token](_input)
 
     def tokenize(self, _input, **kwargs):
-        lineno = kwargs.get('lineno') or 0
-        column = kwargs.get('column') or 0
+        lineno = kwargs.get('lineno') or 1
+        column = kwargs.get('column') or 1
         _input, lineno, column = self.__pass_space(_input, lineno, column)
         while _input:
             kwargs.update({'lineno': lineno, 'column': column})
@@ -197,6 +197,7 @@ class Lexer(object):
             column = column + len(token.value)
             _input = _input[len(token.value):]
             _input, lineno, column = self.__pass_space(_input, lineno, column)
+        return None
 
 
 # xParse Normal Format: expressions to describe the grammar of xParse.
