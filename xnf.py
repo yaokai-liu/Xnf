@@ -326,7 +326,6 @@ def __build_rules__(xnf_tokens):
     assert status == 0, "EOF occurs!"
     return rules
 
-
 class Parser(object):
 
     def __init__(self, name: str, **kwargs):
@@ -336,6 +335,7 @@ class Parser(object):
         self.__TARGETS__ = dict()
         self.__FIRST_SET__ = dict()
         self.__FOLLOW_SET__ = dict()
+        self.__ENV_SET__ = set()
         self.__START__ = None
         self.__LEXER__ = kwargs.get('lexer') or None
         self.lineno = kwargs.get("lineno") or 0
@@ -359,6 +359,9 @@ class Parser(object):
     @property
     def targets(self):
         return set(self.__TARGETS__.keys())
+
+    def add_environment(self, token: str):
+        self.__ENV_SET__.add(token)
 
     def set_rules(self, _input, start: str):
         tokens = self.__LEXER__.tokenize(_input)
@@ -467,11 +470,19 @@ class Parser(object):
                 extend.add(LrItem(_rule, lr_item.lookahead, 0))
         return extend
 
+    def __init_items__(self):
+        if len(self.__ENV_SET__) == 0:
+            return {LrItem(_, "$", 0) for _ in XNF_PARSER.__TARGETS__['~']}
+        target = set()
+        for lookahead in self.__ENV_SET__:
+            target.update({LrItem(_, lookahead, 0) for _ in XNF_PARSER.__TARGETS__['~']})
+        return target
+
     def build(self):
         i, state = 0, tuple()
         states, table = [state], {state: dict()}
-        target = {LrItem(_, "$", 0) for _ in XNF_PARSER.__TARGETS__['~']}
-        cache = {state: self.__item_closure__(target)}
+        items = self.__init_items__()
+        cache = {state: self.__item_closure__(items)}
         while i < len(states):
             state = states[i]
             _closure, _c_by_t = cache[state]
@@ -481,16 +492,16 @@ class Parser(object):
                     f""" Conflicting reduce rules: {reduces}, state: {state} """
                 table[state][_.lookahead] = _.rule.name
             for t in _c_by_t:
-                target = {_.next() for _ in _c_by_t[t]}
+                items = {_.next() for _ in _c_by_t[t]}
                 for s in cache:
-                    if len(target - cache[s][0]) == 0:
+                    if len(items - cache[s][0]) == 0:
                         table[state][t] = s
                         break
                 else:
                     _n_state = state + (t,)
                     states.append(_n_state)
                     table[_n_state] = dict()
-                    cache[_n_state] = self.__item_closure__(target)
+                    cache[_n_state] = self.__item_closure__(items)
                     table[state][t] = _n_state
             i += 1
         return table, cache
@@ -548,7 +559,7 @@ class Parser(object):
             lines = [f"'{t}': {list(s)}".replace("'", '"')
                      for t, s in self.__FOLLOW_SET__.items()]
             f.write('{' + ','.join(lines) + '}')
-        table_name = 'machine.json' if not compact else 'machine-compact.json'
+        table_name = 'automaton.json' if not compact else 'automaton-compact.json'
         with open(dest_dir / table_name, 'w') as f:
             f.write(str({
                 f"({', '.join(i)})": {
