@@ -360,8 +360,9 @@ class Parser(object):
     def targets(self):
         return set(self.__TARGETS__.keys())
 
-    def add_environment(self, token: str):
-        self.__ENV_SET__.add(token)
+    def add_environment(self, tokens: set[str]):
+        for token in tokens:
+            self.__ENV_SET__.update(self.first_set_of([token]))
 
     def set_rules(self, _input, start: str):
         tokens = self.__LEXER__.tokenize(_input)
@@ -376,7 +377,7 @@ class Parser(object):
         self.__update_first_set__()
         self.__update_follow_set__()
 
-    def __first_set_of__(self, _items):
+    def __first_set_of__(self, _items: list[str]):
         set1 = {"#"}
         for item in _items:
             set1.update(self.__FIRST_SET__[item])
@@ -401,6 +402,7 @@ class Parser(object):
         self.__TOKENS__.add(start)
         self.__TARGETS__['~'] = {rule}
         self.__START__ = start
+        self.__TOKENS__.add("$")
 
     def __update_first_set__(self):
         self.__FIRST_SET__.clear()
