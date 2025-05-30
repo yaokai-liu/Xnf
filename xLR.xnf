@@ -1,10 +1,14 @@
 
-GrammarEntry = TokenDefinition SEMICOLON | RuleDefinition;
+GrammarEntry = EnumDeclaration SEMICOLON | TokenDefinition SEMICOLON | RuleDefinition;
 
+EnumDeclaration = ENUM IDENTIFIER LEFT_BRACKET EnumAssignments RIGHT_BRACKET
+                | ENUM IDENTIFIER COLON BUILTIN_TYPE LEFT_BRACKET EnumAssignments RIGHT_BRACKET;
 TokenDefinition = TOKEN IDENTIFIER LEFT_BRACKET Declarations RIGHT_BRACKET;
 RuleDefinition = TokenDefinition IDENTIFIER GrammarPattern GrammarAction
                | IDENTIFIER      IDENTIFIER GrammarPattern GrammarAction;
 
+EnumAssignments = EnumAssignments COMMA EnumAssignment | EnumAssignment;
+EnumAssignment = IDENTIFIER ASSIGNER ArithExpr;
 Declarations = Declarations Declaration | Declaration;
 Declaration = DecItem SEMICOLON
             | DecItem ASSIGNER ArithExpr;
@@ -74,8 +78,8 @@ Assignable = IDENTIFIER | Accessed | Subscribed;
 Accessed = IntegratedExpr DOT IDENTIFIER;
 Subscribed = IntegratedExpr LEFT_SQUARE_BRACKET ArithExpr RIGHT_SQUARE_BRACKET;
 
-IntegratedExpr = LEFT_PARENTHESIS ArithExpr RIGHT_PARENTHESIS | Assignable;
+IntegratedExpr =LEFT_PARENTHESIS ArithExpr RIGHT_PARENTHESIS  | Assignable;
 
-FunctionCall = IntegratedExpr LEFT_PARENTHESIS Arguments RIGHT_PARENTHESIS;
+FunctionCall = BUILTIN_FUNCTION LEFT_PARENTHESIS Arguments RIGHT_PARENTHESIS;
 
 Arguments = Arguments COMMA ArithExpr | ArithExpr | ;
