@@ -1,24 +1,22 @@
 
 GrammarEntry = EnumDeclaration SEMICOLON | TokenDefinition SEMICOLON | RuleDefinition;
 
-EnumDeclaration = ENUM IDENTIFIER LEFT_BRACKET EnumAssignments RIGHT_BRACKET
-                | ENUM IDENTIFIER COLON BUILTIN_TYPE LEFT_BRACKET EnumAssignments RIGHT_BRACKET;
+EnumDeclaration = ENUM IDENTIFIER LEFT_BRACKET EnumItems RIGHT_BRACKET
+                | ENUM IDENTIFIER COLON IDENTIFIER LEFT_BRACKET EnumItems RIGHT_BRACKET;
 TokenDefinition = TOKEN IDENTIFIER LEFT_BRACKET Declarations RIGHT_BRACKET;
 RuleDefinition = TokenDefinition IDENTIFIER GrammarPattern GrammarAction
                | IDENTIFIER      IDENTIFIER GrammarPattern GrammarAction;
 
-EnumAssignments = EnumAssignments COMMA EnumAssignment | EnumAssignment;
-EnumAssignment = IDENTIFIER ASSIGNER ArithExpr;
+EnumItems = EnumItems COMMA EnumItem | EnumItem;
+EnumItem = IDENTIFIER ASSIGNER ArithExpr | IDENTIFIER;
 Declarations = Declarations Declaration | Declaration;
 Declaration = DecItem SEMICOLON
             | DecItem ASSIGNER ArithExpr;
 DecItem = IDENTIFIER IDENTIFIER
-        | BUILTIN_TYPE IDENTIFIER
-        | IDENTIFIER IDENTIFIER LEFT_SQUARE_BRACKET ArithExpr RIGHT_SQUARE_BRACKET
-        | BUILTIN_TYPE IDENTIFIER LEFT_SQUARE_BRACKET ArithExpr RIGHT_SQUARE_BRACKET;
+        | IDENTIFIER IDENTIFIER LEFT_SQUARE_BRACKET ArithExpr RIGHT_SQUARE_BRACKET;
 
 GrammarPattern = LEFT_PARENTHESIS GrammarItems RIGHT_PARENTHESIS;
-GrammarItems = GrammarItems GrammarItem | GrammarItems | ;
+GrammarItems = GrammarItems GrammarItem | GrammarItem | ;
 GrammarItem = LEFT_PARENTHESIS GrammarItems RIGHT_PARENTHESIS
             | GrammarItem QUANTIFIER
             | IDENTIFIER;
