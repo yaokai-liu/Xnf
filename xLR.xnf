@@ -10,10 +10,12 @@ RuleDefinition = TokenDefinition IDENTIFIER GrammarPattern GrammarAction
 EnumItems = EnumItems COMMA EnumItem | EnumItem;
 EnumItem = IDENTIFIER ASSIGNER ArithExpr | IDENTIFIER;
 Declarations = Declarations Declaration | Declaration;
-Declaration = DecItem SEMICOLON
-            | DecItem ASSIGNER ArithExpr;
-DecItem = IDENTIFIER IDENTIFIER
-        | IDENTIFIER IDENTIFIER LEFT_SQUARE_BRACKET ArithExpr RIGHT_SQUARE_BRACKET;
+Declaration = IDENTIFIER VarList SEMICOLON;
+VarList = VarList COMMA Variable | Variable;
+Variable = IDENTIFIER
+         | IDENTIFIER Subscriber
+         | IDENTIFIER ASSIGNER ArithExpr
+         | IDENTIFIER Subscriber ASSIGNER ArithExpr;
 
 GrammarPattern = LEFT_PARENTHESIS GrammarItems RIGHT_PARENTHESIS;
 GrammarItems = GrammarItems GrammarItem | GrammarItem | ;
@@ -74,7 +76,9 @@ Evaluable = IntegratedExpr | FunctionCall | BUILTIN_VARIABLE | NUMBER;
 
 Assignable = IDENTIFIER | Accessed | Subscribed;
 Accessed = IntegratedExpr DOT IDENTIFIER;
-Subscribed = IntegratedExpr LEFT_SQUARE_BRACKET ArithExpr RIGHT_SQUARE_BRACKET;
+Subscribed = IntegratedExpr Subscriber;
+
+Subscriber =  LEFT_SQUARE_BRACKET ArithExpr RIGHT_SQUARE_BRACKET;
 
 IntegratedExpr =LEFT_PARENTHESIS ArithExpr RIGHT_PARENTHESIS  | Assignable;
 
