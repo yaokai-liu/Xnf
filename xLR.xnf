@@ -4,8 +4,8 @@ GrammarEntry = EnumDeclaration SEMICOLON | TokenDefinition SEMICOLON | RuleDefin
 EnumDeclaration = ENUM IDENTIFIER LEFT_BRACKET EnumItems RIGHT_BRACKET
                 | ENUM IDENTIFIER COLON IDENTIFIER LEFT_BRACKET EnumItems RIGHT_BRACKET;
 TokenDefinition = TOKEN IDENTIFIER LEFT_BRACKET Declarations RIGHT_BRACKET;
-RuleDefinition = TokenDefinition IDENTIFIER GrammarPattern GrammarAction
-               | IDENTIFIER      IDENTIFIER GrammarPattern GrammarAction;
+RuleDefinition = TokenDefinition IDENTIFIER GrammarPattern ActionBlock
+               | IDENTIFIER      IDENTIFIER GrammarPattern ActionBlock;
 
 EnumItems = EnumItems COMMA EnumItem | EnumItem;
 EnumItem = IDENTIFIER ASSIGNER ArithExpr | IDENTIFIER;
@@ -22,8 +22,6 @@ GrammarItems = GrammarItems GrammarItem | GrammarItem | ;
 GrammarItem = LEFT_PARENTHESIS GrammarItems RIGHT_PARENTHESIS
             | GrammarItem QUANTIFIER
             | IDENTIFIER;
-
-GrammarAction = LEFT_BRACKET ActionStatements RIGHT_BRACKET;
 
 ActionStatements = ActionStatements ActionStatement | ActionStatement | ;
 
@@ -42,18 +40,15 @@ ForCondition = LEFT_PARENTHESIS OptionalAssignExpr SEMICOLON OptionalCondExpr SE
 OptionalAssignExpr = AssignExpr | ;
 OptionalCondExpr = CondExpr | ;
 
-CondExpr = CondExpr BOOL_OR AndCondExpr | AndCondExpr;
+CondExpr = CondExpr COND_BIN_OP SingleCondExpr | SingleCondExpr;
 
-AndCondExpr = AndCondExpr BOOL_AND SingleCondExpr | SingleCondExpr;
-
-SingleCondExpr = BOOL_NOT SingleCondExpr
-               | SingleCondExpr COND_BIN_OP SingleCondExpr
-               | COND_SIN_OP ArithExpr
+SingleCondExpr = COND_SIN_OP SingleCondExpr
+               | ArithExpr COMPARE_OP ArithExpr
                | ArithExpr;
 
 AssignExpr = Assignable ASSIGNER ArithExpr
-           | INTEGRATED_AHEAD_OP IntegratedExpr
-           | IntegratedExpr INTEGRATED_FOLLOW_OP;
+           | INTEGRATED_AFFIX_OP IntegratedExpr
+           | IntegratedExpr INTEGRATED_AFFIX_OP;
 
 ArithExpr = Arith_0_Expr | AssignExpr | LEFT_PARENTHESIS CondExpr RIGHT_PARENTHESIS;
 
