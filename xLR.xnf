@@ -47,13 +47,13 @@ SingleCondExpr = COND_SIN_OP SingleCondExpr
                | ArithExpr;
 
 AssignExpr = Assignable ASSIGNER ArithExpr
-           | INTEGRATED_AFFIX_OP IntegratedExpr
-           | IntegratedExpr INTEGRATED_AFFIX_OP;
+           | INTEGRATED_OP IntegratedExpr
+           | IntegratedExpr INTEGRATED_OP;
 
 ArithExpr = Arith_0_Expr | AssignExpr | LEFT_PARENTHESIS CondExpr RIGHT_PARENTHESIS;
 
-Arith_0_Expr = Arith_0_Expr ARITH_0_BIN_OP Arith_1_Expr
-             | ARITH_0_SIN_OP Arith_0_Expr
+Arith_0_Expr = Arith_0_Expr ARITH_0_OP Arith_1_Expr
+             | ARITH_0_OP Arith_0_Expr
              | Arith_1_Expr;
 Arith_1_Expr = Arith_1_Expr ARITH_1_BIN_OP Arith_2_Expr
              | ARITH_1_SIN_OP Arith_1_Expr
@@ -67,7 +67,7 @@ Arith_3_Expr = Arith_3_Expr ARITH_3_BIN_OP Arith_4_Expr
 Arith_4_Expr = ARITH_4_SIN_OP Arith_4_Expr
              | Evaluable;
 
-Evaluable = IntegratedExpr | FunctionCall | BUILTIN_VARIABLE | NUMBER;
+Evaluable = IntegratedExpr | FunctionCall | BUILTIN_VARIABLE | INTEGER | FLOAT;
 
 Assignable = IDENTIFIER | Accessed | Subscribed;
 Accessed = IntegratedExpr DOT IDENTIFIER;
@@ -75,7 +75,7 @@ Subscribed = IntegratedExpr Subscriber;
 
 Subscriber =  LEFT_SQUARE_BRACKET ArithExpr RIGHT_SQUARE_BRACKET;
 
-IntegratedExpr =LEFT_PARENTHESIS ArithExpr RIGHT_PARENTHESIS  | Assignable;
+IntegratedExpr = LEFT_PARENTHESIS ArithExpr RIGHT_PARENTHESIS | Assignable;
 
 FunctionCall = BUILTIN_FUNCTION LEFT_PARENTHESIS Arguments RIGHT_PARENTHESIS;
 
