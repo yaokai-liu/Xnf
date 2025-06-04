@@ -40,11 +40,11 @@ ForCondition = LEFT_PARENTHESIS OptionalAssignExpr SEMICOLON OptionalCondExpr SE
 OptionalAssignExpr = AssignExpr | ;
 OptionalCondExpr = CondExpr | ;
 
-CondExpr = CondExpr COND_BIN_OP SingleCondExpr | SingleCondExpr;
+CondExpr = CondExpr COND_BIN_OP CompExpr | CompExpr;
 
-SingleCondExpr = COND_SIN_OP SingleCondExpr
-               | ArithExpr COMPARE_OP ArithExpr
-               | ArithExpr;
+CompExpr = COND_SIN_OP CompExpr
+         | ArithExpr COMPARE_OP ArithExpr
+         | ArithExpr;
 
 AssignExpr = Assignable ASSIGNER ArithExpr
            | INTEGRATED_OP IntegratedExpr
