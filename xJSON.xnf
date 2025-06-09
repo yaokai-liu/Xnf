@@ -1,15 +1,20 @@
 Object = LEFT_BRACKET Pairs RIGHT_BRACKET
+       | LEFT_BRACKET Pairs COMMA RIGHT_BRACKET;
 
-Pairs = Pair | Pairs COMMA Comments Pair | Pairs COMMA Pair
+Pairs = Pair | Pairs COMMA Pair;
 
-Pair = KEY COLON Value | DOT KEY EQUAL Value
+Pair = LEFT_SQUARE_BRACKET PathKey RIGHT_SQUARE_BRACKET ASSIGN Value
+     | LEFT_SQUARE_BRACKET PathKey RIGHT_SQUARE_BRACKET Value
+     | PathKey ASSIGN Value
+     | TEXT ASSIGN Value;
 
-Value = Object | List | NUMBER | TEXT
+PathKey = PathKey DOT KEY | DOT KEY | KEY;
 
-List = BEGIN_SQUARE_BRACKET Values END_SQUARE_BRACKET
+Value = Object | List | NUMBER | Texts | BOOLEAN | NULL;
 
-Values = Value | Values COMMA value
+List = LEFT_SQUARE_BRACKET Values RIGHT_SQUARE_BRACKET
+     | LEFT_SQUARE_BRACKET Values COMMA RIGHT_SQUARE_BRACKET;
 
-Comments = Comment | Comments Comment
+Values = Value | Values COMMA Value;
 
-Comment = BEGIN_COMMENT TEXT END_COMMENT
+Texts = Texts TEXT | TEXT;

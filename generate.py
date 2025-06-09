@@ -17,5 +17,5 @@ if __name__ == '__main__':
     else:
         compact = True
     with open(__dir__ / 'xJSON.xnf', 'r', encoding='utf-8') as f:
-        XNF_PARSER.set_rules(f.read(), start='Machine')
-    XNF_PARSER.dump(cfd, compact=compact)
+        XNF_PARSER.set_rules(f.read(), start='Object')
+    XNF_PARSER.dump(cfd / 'xJSON', compact=compact)
