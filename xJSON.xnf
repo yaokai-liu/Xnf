@@ -3,12 +3,12 @@ Object = LEFT_BRACKET Pairs RIGHT_BRACKET
 
 Pairs = Pair | Pairs COMMA Pair;
 
-Pair = LEFT_SQUARE_BRACKET PathKey RIGHT_SQUARE_BRACKET ASSIGN Value
-     | LEFT_SQUARE_BRACKET PathKey RIGHT_SQUARE_BRACKET Value
-     | PathKey ASSIGN Value
+Pair = LEFT_SQUARE_BRACKET Path RIGHT_SQUARE_BRACKET ASSIGN Value
+     | LEFT_SQUARE_BRACKET Path RIGHT_SQUARE_BRACKET Value
+     | Path ASSIGN Value
      | TEXT ASSIGN Value;
 
-PathKey = PathKey DOT KEY | DOT KEY | KEY;
+Path = Path DOT KEY | DOT KEY | KEY;
 
 Value = Object | List | NUMBER | Texts | BOOLEAN | NULL;
 
