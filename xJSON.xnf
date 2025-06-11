@@ -5,8 +5,7 @@ Pairs = Pair | Pairs COMMA Pair;
 
 Pair = LEFT_SQUARE_BRACKET Path RIGHT_SQUARE_BRACKET ASSIGN Value
      | LEFT_SQUARE_BRACKET Path RIGHT_SQUARE_BRACKET Value
-     | Path ASSIGN Value
-     | TEXT ASSIGN Value;
+     | Path ASSIGN Value;
 
 Path = Path DOT KEY | DOT KEY | KEY;
 
