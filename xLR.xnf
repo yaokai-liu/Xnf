@@ -67,7 +67,9 @@ Arith_3_Expr = Arith_3_Expr ARITH_3_BIN_OP Arith_4_Expr
 Arith_4_Expr = ARITH_4_SIN_OP Arith_4_Expr
              | Evaluable;
 
-Evaluable = IntegratedExpr | FunctionCall | BUILTIN_VARIABLE | INTEGER | FLOAT;
+Evaluable = IntegratedExpr | FunctionCall
+          | IDENTIFIER DOUBLE_COLON IDENTIFIER
+          | BUILTIN_VARIABLE | VAL_LITERAL;
 
 Assignable = IDENTIFIER | Accessed | Subscribed;
 Accessed = IntegratedExpr DOT IDENTIFIER;
