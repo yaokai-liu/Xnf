@@ -17,10 +17,12 @@ Variable = IDENTIFIER
          | IDENTIFIER ASSIGNER ArithExpr
          | IDENTIFIER Subscriber ASSIGNER ArithExpr;
 
-GrammarPattern = LEFT_PARENTHESIS GrammarItems RIGHT_PARENTHESIS;
+GrammarPattern = LEFT_PARENTHESIS GrammarItems RIGHT_PARENTHESIS
+               | LiteralTexts;
 GrammarItems = GrammarItems GrammarItem | GrammarItem | ;
 GrammarItem = LEFT_PARENTHESIS GrammarItems RIGHT_PARENTHESIS
             | GrammarItem QUANTIFIER
+            | SINGLE_CHAR
             | IDENTIFIER;
 
 ActionStatements = ActionStatements ActionStatement | ActionStatement | ;
@@ -69,7 +71,10 @@ Arith_4_Expr = ARITH_4_SIN_OP Arith_4_Expr
 
 Evaluable = IntegratedExpr | FunctionCall
           | IDENTIFIER DOUBLE_COLON IDENTIFIER
-          | BUILTIN_VARIABLE | VAL_LITERAL;
+          | BUILTIN_VARIABLE | VAL_LITERAL
+          | SINGLE_CHAR | LiteralTexts;
+
+LiteralTexts = LiteralTexts TEXT | TEXT;
 
 Assignable = IDENTIFIER | Accessed | Subscribed;
 Accessed = IntegratedExpr DOT IDENTIFIER;
