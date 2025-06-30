@@ -4,8 +4,8 @@ GrammarEntry = EnumDeclaration SEMICOLON | TokenDefinition SEMICOLON | RuleDefin
 EnumDeclaration = ENUM IDENTIFIER LEFT_BRACKET EnumItems RIGHT_BRACKET
                 | ENUM IDENTIFIER COLON IDENTIFIER LEFT_BRACKET EnumItems RIGHT_BRACKET;
 TokenDefinition = TOKEN IDENTIFIER LEFT_BRACKET Declarations RIGHT_BRACKET;
-RuleDefinition = TokenDefinition IDENTIFIER GrammarPattern ActionBlock
-               | IDENTIFIER      IDENTIFIER GrammarPattern ActionBlock;
+RuleDefinition = TokenDefinition IDENTIFIER LEFT_PARENTHESIS Pattern RIGHT_PARENTHESIS ActionBlock
+               | IDENTIFIER      IDENTIFIER LEFT_PARENTHESIS Pattern RIGHT_PARENTHESIS ActionBlock;
 
 EnumItems = EnumItems COMMA EnumItem | EnumItem;
 EnumItem = IDENTIFIER ASSIGNER ArithExpr | IDENTIFIER;
@@ -17,13 +17,12 @@ Variable = IDENTIFIER
          | IDENTIFIER ASSIGNER ArithExpr
          | IDENTIFIER Subscriber ASSIGNER ArithExpr;
 
-GrammarPattern = LEFT_PARENTHESIS GrammarItems RIGHT_PARENTHESIS
-               | LiteralTexts;
-GrammarItems = GrammarItems GrammarItem | GrammarItem | ;
-GrammarItem = LEFT_PARENTHESIS GrammarItems RIGHT_PARENTHESIS
-            | GrammarItem QUANTIFIER
-            | SINGLE_CHAR
-            | IDENTIFIER;
+Pattern = Tokens SPLITER Tokens | Tokens;
+Tokens = Tokens Token | Tokens TEXT | Token | TEXT |;
+Token = LEFT_PARENTHESIS Tokens RIGHT_PARENTHESIS
+      | Token QUANTIFIER
+      | SINGLE_CHAR
+      | IDENTIFIER;
 
 ActionStatements = ActionStatements ActionStatement | ActionStatement | ;
 
