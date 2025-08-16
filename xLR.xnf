@@ -17,7 +17,7 @@ Variable = IDENTIFIER
          | IDENTIFIER ASSIGNER ArithExpr
          | IDENTIFIER Subscriber ASSIGNER ArithExpr;
 
-Pattern = Tokens SPLITER Tokens | Tokens;
+Pattern = Tokens VERTICAL_BAR Tokens | Tokens;
 Tokens = Tokens Token | Tokens TEXT | Token | TEXT |;
 Token = LEFT_PARENTHESIS Tokens RIGHT_PARENTHESIS
       | Token QUANTIFIER
