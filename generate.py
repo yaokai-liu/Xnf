@@ -16,6 +16,6 @@ if __name__ == '__main__':
         compact = False
     else:
         compact = True
-    with open(__dir__ / 'xJSON.xnf', 'r', encoding='utf-8') as f:
+    with open(__dir__ / 'xCONF.xnf', 'r', encoding='utf-8') as f:
         XNF_PARSER.set_rules(f.read(), start='Object')
-    XNF_PARSER.dump(cfd / 'xJSON', compact=compact)
+    XNF_PARSER.dump(cfd / 'xCONF', compact=compact)
