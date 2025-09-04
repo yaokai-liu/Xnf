@@ -4,8 +4,10 @@ Object = LEFT_BRACKET Pairs RIGHT_BRACKET
 Pairs = Pair | Pairs COMMA Pair;
 
 Pair = LEFT_SQUARE_BRACKET Path RIGHT_SQUARE_BRACKET ASSIGN Value
+     | LEFT_SQUARE_BRACKET Path RIGHT_SQUARE_BRACKET COLON Value
      | LEFT_SQUARE_BRACKET Path RIGHT_SQUARE_BRACKET Value
-     | Path ASSIGN Value;
+     | Path ASSIGN Value
+     | Path COLON  Value;
 
 Path = Path DOT KEY | DOT KEY | KEY;
 
