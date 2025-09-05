@@ -9,7 +9,7 @@ Pair = LEFT_SQUARE_BRACKET Path RIGHT_SQUARE_BRACKET ASSIGN Value
      | Path ASSIGN Value
      | Path COLON  Value;
 
-Path = Path DOT KEY | DOT KEY | KEY;
+Path = Path DOT KEY | Path LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET | DOT KEY | KEY;
 
 Value = Object | List | NUMBER | Texts | BOOLEAN | NULL;
 

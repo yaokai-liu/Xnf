@@ -19,6 +19,7 @@ if __name__ == '__main__':
     with open(__dir__ / 'xCONF.xnf', 'r', encoding='utf-8') as f:
         XNF_PARSER.set_rules(f.read(), start='Object')
     XNF_PARSER.dump(cfd / 'xCONF', compact=compact)
-    with open(__dir__ / 'xCONF.xnf', 'r', encoding='utf-8') as f:
-        XNF_PARSER.set_rules(f.read(), start='Path')
+    XNF_PARSER.clear()
+    path_rule = "Path = Path DOT KEY | Path LEFT_SQUARE_BRACKET NUMBER RIGHT_SQUARE_BRACKET | DOT KEY | KEY;"
+    XNF_PARSER.set_rules(path_rule, start='Path')
     XNF_PARSER.dump(cfd / 'Path', compact=compact)
