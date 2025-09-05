@@ -19,3 +19,6 @@ if __name__ == '__main__':
     with open(__dir__ / 'xCONF.xnf', 'r', encoding='utf-8') as f:
         XNF_PARSER.set_rules(f.read(), start='Object')
     XNF_PARSER.dump(cfd / 'xCONF', compact=compact)
+    with open(__dir__ / 'xCONF.xnf', 'r', encoding='utf-8') as f:
+        XNF_PARSER.set_rules(f.read(), start='Path')
+    XNF_PARSER.dump(cfd / 'Path', compact=compact)
