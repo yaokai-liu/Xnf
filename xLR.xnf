@@ -1,16 +1,26 @@
 
-GrammarEntry = EnumDeclaration SEMICOLON | TokenDefinition SEMICOLON | RuleDefinition;
+GrammarEntry = EnumDeclaration SEMICOLON
+             | TokenDefinition SEMICOLON
+             | AttrDefinition SEMICOLON
+             | RuleDefinition;
 
 EnumDeclaration = ENUM IDENTIFIER LEFT_BRACKET EnumItems RIGHT_BRACKET
                 | ENUM IDENTIFIER COLON IDENTIFIER LEFT_BRACKET EnumItems RIGHT_BRACKET;
-TokenDefinition = TOKEN IDENTIFIER LEFT_BRACKET Declarations RIGHT_BRACKET;
+TokenDefinition = AttrList TOKEN IDENTIFIER LEFT_BRACKET Declarations RIGHT_BRACKET
+                | TOKEN IDENTIFIER LEFT_BRACKET Declarations RIGHT_BRACKET;
+AttrDefinition = AttrList ATTR IDENTIFIER ActionBlock
+               | ATTR IDENTIFIER ActionBlock;
 RuleDefinition = TokenDefinition IDENTIFIER LEFT_PARENTHESIS Pattern RIGHT_PARENTHESIS ActionBlock
                | IDENTIFIER      IDENTIFIER LEFT_PARENTHESIS Pattern RIGHT_PARENTHESIS ActionBlock;
-
+AttrList = AttrList IDENTIFIER IDENTIFIER
+         | IDENTIFIER IDENTIFIER
+         | AttrList IDENTIFIER
+         | IDENTIFIER;
 EnumItems = EnumItems COMMA EnumItem | EnumItem;
 EnumItem = IDENTIFIER ASSIGNER ArithExpr | IDENTIFIER;
 Declarations = Declarations Declaration | Declaration;
-Declaration = IDENTIFIER VarList SEMICOLON;
+Declaration = AttrList IDENTIFIER VarList SEMICOLON
+            | IDENTIFIER VarList SEMICOLON;
 VarList = VarList COMMA Variable | Variable;
 Variable = IDENTIFIER
          | IDENTIFIER Subscriber
@@ -68,16 +78,20 @@ Arith_3_Expr = Arith_3_Expr ARITH_3_BIN_OP Arith_4_Expr
 Arith_4_Expr = ARITH_4_SIN_OP Arith_4_Expr
              | Evaluable;
 
-Evaluable = IntegratedExpr | FunctionCall
+Evaluable = IntegratedExpr
+          | FunctionCall
           | IDENTIFIER DOUBLE_COLON IDENTIFIER
-          | BUILTIN_VARIABLE | VAL_LITERAL
-          | SINGLE_CHAR | LiteralTexts;
+          | BUILTIN_VARIABLE
+          | LiteralValue;
+
+LiteralValue = VAL_LITERAL | SINGLE_CHAR | LiteralTexts;
 
 LiteralTexts = LiteralTexts TEXT | TEXT;
 
-Assignable = IDENTIFIER | Accessed | Subscribed;
+Assignable = IDENTIFIER | Accessed | Subscribed | Attributed;
 Accessed = IntegratedExpr DOT IDENTIFIER;
 Subscribed = IntegratedExpr Subscriber;
+Attributed = IntegratedExpr AT IDENTIFIER;
 
 Subscriber =  LEFT_SQUARE_BRACKET ArithExpr RIGHT_SQUARE_BRACKET;
 
