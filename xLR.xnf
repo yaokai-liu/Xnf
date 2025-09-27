@@ -25,7 +25,7 @@ VarList = VarList COMMA Variable | Variable;
 Variable = IDENTIFIER
          | IDENTIFIER Subscriber
          | IDENTIFIER ASSIGNER ArithExpr
-         | IDENTIFIER Subscriber ASSIGNER ArithExpr;
+         | IDENTIFIER Subscriber ASSIGNER LEFT_BRACKET ArrayInitExprList RIGHT_BRACKET;
 
 Pattern = Tokens VERTICAL_BAR Tokens | Tokens;
 Tokens = Tokens Token | Tokens TEXT | Token | TEXT |;
@@ -46,10 +46,11 @@ WhileStatement = WHILE IfCondition ActionStatement;
 ActionBlock = LEFT_BRACKET ActionStatements RIGHT_BRACKET;
 
 IfCondition = LEFT_PARENTHESIS CondExpr RIGHT_PARENTHESIS;
-ForCondition = LEFT_PARENTHESIS OptionalAssignExpr SEMICOLON OptionalCondExpr SEMICOLON OptionalAssignExpr RIGHT_PARENTHESIS;
+ForCondition = LEFT_PARENTHESIS OptionalLoopInitExpr SEMICOLON OptionalLoopCondExpr SEMICOLON OptionalLoopUpdateExpr RIGHT_PARENTHESIS;
 
-OptionalAssignExpr = AssignExpr | ;
-OptionalCondExpr = CondExpr | ;
+OptionalLoopUpdateExpr = AssignExpr | ;
+OptionalLoopCondExpr = CondExpr | ;
+OptionalLoopInitExpr = Declaration | AssignExpr | ;
 
 CondExpr = CondExpr COND_BIN_OP CompExpr | CompExpr;
 
@@ -60,6 +61,10 @@ CompExpr = COND_SIN_OP CompExpr
 AssignExpr = Assignable ASSIGNER ArithExpr
            | INTEGRATED_OP IntegratedExpr
            | IntegratedExpr INTEGRATED_OP;
+
+ArrayInitExprList = ArrayInitExprList COMMA ArrayInitExpr | ArrayInitExpr |;
+
+ArrayInitExpr = LEFT_SQUARE_BRACKET Evaluable RIGHT_SQUARE_BRACKET ASSIGNER ArithExpr | ArithExpr;
 
 ArithExpr = Arith_0_Expr | AssignExpr | LEFT_PARENTHESIS CondExpr RIGHT_PARENTHESIS;
 
@@ -81,7 +86,6 @@ Arith_4_Expr = ARITH_4_SIN_OP Arith_4_Expr
 Evaluable = IntegratedExpr
           | FunctionCall
           | IDENTIFIER DOUBLE_COLON IDENTIFIER
-          | BUILTIN_VARIABLE
           | LiteralValue;
 
 LiteralValue = VAL_LITERAL | SINGLE_CHAR | LiteralTexts;
@@ -95,8 +99,8 @@ Attributed = IntegratedExpr AT IDENTIFIER;
 
 Subscriber =  LEFT_SQUARE_BRACKET ArithExpr RIGHT_SQUARE_BRACKET;
 
-IntegratedExpr = LEFT_PARENTHESIS ArithExpr RIGHT_PARENTHESIS | Assignable;
+IntegratedExpr = LEFT_PARENTHESIS ArithExpr RIGHT_PARENTHESIS | Assignable | BUILTIN_IDENTIFIER;
 
-FunctionCall = BUILTIN_FUNCTION LEFT_PARENTHESIS Arguments RIGHT_PARENTHESIS;
+FunctionCall = BUILTIN_IDENTIFIER LEFT_PARENTHESIS Arguments RIGHT_PARENTHESIS;
 
 Arguments = Arguments COMMA ArithExpr | ArithExpr | ;
