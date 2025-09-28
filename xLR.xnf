@@ -12,15 +12,16 @@ AttrDefinition = AttrList ATTR IDENTIFIER ActionBlock
                | ATTR IDENTIFIER ActionBlock;
 RuleDefinition = TokenDefinition IDENTIFIER LEFT_PARENTHESIS Pattern RIGHT_PARENTHESIS ActionBlock
                | IDENTIFIER      IDENTIFIER LEFT_PARENTHESIS Pattern RIGHT_PARENTHESIS ActionBlock;
-AttrList = AttrList IDENTIFIER IDENTIFIER
-         | IDENTIFIER IDENTIFIER
-         | AttrList IDENTIFIER
-         | IDENTIFIER;
+AttrList = AttrList ATTRNAME LEFT_PARENTHESIS Arguments RIGHT_PARENTHESIS
+         | ATTRNAME LEFT_PARENTHESIS Arguments RIGHT_PARENTHESIS
+         | AttrList ATTRNAME
+         | ATTRNAME;
+
 EnumItems = EnumItems COMMA EnumItem | EnumItem;
 EnumItem = IDENTIFIER ASSIGNER ArithExpr | IDENTIFIER;
 Declarations = Declarations Declaration | Declaration;
-Declaration = AttrList IDENTIFIER VarList SEMICOLON
-            | IDENTIFIER VarList SEMICOLON;
+Declaration = AttrList TYPENAME VarList SEMICOLON
+            | TYPENAME VarList SEMICOLON;
 VarList = VarList COMMA Variable | Variable;
 Variable = IDENTIFIER
          | IDENTIFIER Subscriber
@@ -85,7 +86,7 @@ Arith_4_Expr = ARITH_4_SIN_OP Arith_4_Expr
 
 Evaluable = IntegratedExpr
           | FunctionCall
-          | IDENTIFIER DOUBLE_COLON IDENTIFIER
+          | ENUM_GROUP DOUBLE_COLON IDENTIFIER
           | LiteralValue;
 
 LiteralValue = VAL_LITERAL | SINGLE_CHAR | LiteralTexts;
