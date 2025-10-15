@@ -1,32 +1,58 @@
 
 GrammarEntry = EnumDeclaration SEMICOLON
-             | TokenDefinition SEMICOLON
+             | TypeDefinition SEMICOLON
              | AttrDefinition SEMICOLON
+             | TypeRenaming SEMICOLON
+             | AttrRenaming SEMICOLON
+             | FuncDefinition
              | RuleDefinition;
 
 EnumDeclaration = ENUM IDENTIFIER LEFT_BRACKET EnumItems RIGHT_BRACKET
                 | ENUM IDENTIFIER COLON IDENTIFIER LEFT_BRACKET EnumItems RIGHT_BRACKET;
-TokenDefinition = AttrList TOKEN IDENTIFIER LEFT_BRACKET Declarations RIGHT_BRACKET
-                | TOKEN IDENTIFIER LEFT_BRACKET Declarations RIGHT_BRACKET;
-AttrDefinition = AttrList ATTR IDENTIFIER ActionBlock
-               | ATTR IDENTIFIER ActionBlock;
-RuleDefinition = TokenDefinition IDENTIFIER LEFT_PARENTHESIS Pattern RIGHT_PARENTHESIS ActionBlock
-               | IDENTIFIER      IDENTIFIER LEFT_PARENTHESIS Pattern RIGHT_PARENTHESIS ActionBlock;
+TypeDefinition = AttrList TYPEHINT IDENTIFIER LEFT_BRACKET Declarations RIGHT_BRACKET;
+AttrDefinition = AttrList ATTRIBUTE IDENTIFIER LEFT_PARENTHESIS Parameters RIGHT_PARENTHESIS ActionBlock
+               | AttrList ATTRIBUTE IDENTIFIER ActionBlock;
+RuleDefinition = Type AttrList IDENTIFIER LEFT_PARENTHESIS Pattern RIGHT_PARENTHESIS ActionBlock;
+FuncDefinition = Type AttrList IDENTIFIER LEFT_PARENTHESIS Parameters RIGHT_PARENTHESIS ActionBlock;
+TypeRenaming = TYPEDEF Type AttrList IDENTIFIER LEFT_PARENTHESIS Parameters RIGHT_PARENTHESIS
+             | TYPEDEF Type AttrList IDENTIFIER Subscriber
+             | TYPEDEF Type AttrList IDENTIFIER;
+AttrRenaming = ATTRDEF AttrList ATTRNAME LEFT_PARENTHESIS Arguments RIGHT_PARENTHESIS IDENTIFIER
+             | ATTRDEF AttrList ATTRNAME IDENTIFIER;
+
+Type = TypeDefinition | AttrList TYPENAME;
 AttrList = AttrList ATTRNAME LEFT_PARENTHESIS Arguments RIGHT_PARENTHESIS
          | ATTRNAME LEFT_PARENTHESIS Arguments RIGHT_PARENTHESIS
          | AttrList ATTRNAME
-         | ATTRNAME;
-
+         | ATTRNAME
+         | ;
 EnumItems = EnumItems COMMA EnumItem | EnumItem;
-EnumItem = IDENTIFIER ASSIGNER ArithExpr | IDENTIFIER;
+EnumItem = IDENTIFIER ASSIGNER Evaluable | IDENTIFIER;
 Declarations = Declarations Declaration | Declaration;
-Declaration = AttrList TYPENAME VarList SEMICOLON
-            | TYPENAME VarList SEMICOLON;
+Declaration = AttrList TYPENAME AttrList IDENTIFIER LEFT_PARENTHESIS Parameters RIGHT_PARENTHESIS SEMICOLON
+            | AttrList TYPENAME AttrList VarList SEMICOLON;
+Parameters = Parameters COMMA Parameter | Parameter;
+Parameter = AttrList TYPENAME AttrList IDENTIFIER Subscriber
+          | AttrList TYPENAME AttrList Subscriber
+          | AttrList TYPENAME AttrList IDENTIFIER
+          | AttrList TYPENAME AttrList;
 VarList = VarList COMMA Variable | Variable;
-Variable = IDENTIFIER
+Variable = IDENTIFIER Subscriber ASSIGNER StructuredInitializer
+         | IDENTIFIER ASSIGNER VariableInitializer
          | IDENTIFIER Subscriber
-         | IDENTIFIER ASSIGNER ArithExpr
-         | IDENTIFIER Subscriber ASSIGNER LEFT_BRACKET ArrayInitExprList RIGHT_BRACKET;
+         | IDENTIFIER;
+
+StructuredInitializer = LEFT_BRACKET VariableInitializerList RIGHT_BRACKET | LEFT_BRACKET RIGHT_BRACKET;
+VariableInitializer = StructuredInitializer | ArithExpr;
+
+VariableInitializerList = VariableInitializerList COMMA InitializerHinter ASSIGNER VariableInitializer
+                        | VariableInitializerList COMMA VariableInitializer
+                        | InitializerHinter ASSIGNER VariableInitializer
+                        | VariableInitializer;
+InitializerHinter = InitializerHinter LEFT_SQUARE_BRACKET Evaluable RIGHT_SQUARE_BRACKET
+                  | LEFT_SQUARE_BRACKET Evaluable RIGHT_SQUARE_BRACKET
+                  | InitializerHinter DOT IDENTIFIER
+                  | DOT IDENTIFIER;
 
 Pattern = Tokens VERTICAL_BAR Tokens | Tokens;
 Tokens = Tokens Token | Tokens TEXT | Token | TEXT |;
@@ -35,8 +61,7 @@ Token = LEFT_PARENTHESIS Tokens RIGHT_PARENTHESIS
       | SINGLE_CHAR
       | IDENTIFIER;
 
-ActionStatements = ActionStatements ActionStatement | ActionStatement | ;
-
+ActionStatements = ActionStatements ActionStatement | ActionStatement;
 ActionStatement = CondStatement | ActionBlock | Declaration SEMICOLON | AssignExpr SEMICOLON;
 
 CondStatement = IfStatement | ForStatement | WhileStatement | CondStatement ELSE ActionStatement;
@@ -44,14 +69,17 @@ CondStatement = IfStatement | ForStatement | WhileStatement | CondStatement ELSE
 IfStatement = IF IfCondition ActionStatement;
 ForStatement = FOR ForCondition ActionStatement;
 WhileStatement = WHILE IfCondition ActionStatement;
-ActionBlock = LEFT_BRACKET ActionStatements RIGHT_BRACKET;
+ActionBlock = LEFT_BRACKET ActionStatements RIGHT_BRACKET
+            | LEFT_BRACKET RIGHT_BRACKET;
 
 IfCondition = LEFT_PARENTHESIS CondExpr RIGHT_PARENTHESIS;
-ForCondition = LEFT_PARENTHESIS OptionalLoopInitExpr SEMICOLON OptionalLoopCondExpr SEMICOLON OptionalLoopUpdateExpr RIGHT_PARENTHESIS;
+ForCondition = LEFT_PARENTHESIS OptionalLoopInitExpr SEMICOLON
+                                OptionalLoopCondExpr SEMICOLON
+                                OptionalLoopUpdateExpr RIGHT_PARENTHESIS;
 
+OptionalLoopInitExpr = Declaration | AssignExpr | ;
 OptionalLoopUpdateExpr = AssignExpr | ;
 OptionalLoopCondExpr = CondExpr | ;
-OptionalLoopInitExpr = Declaration | AssignExpr | ;
 
 CondExpr = CondExpr COND_BIN_OP CompExpr | CompExpr;
 
@@ -62,10 +90,6 @@ CompExpr = COND_SIN_OP CompExpr
 AssignExpr = Assignable ASSIGNER ArithExpr
            | INTEGRATED_OP IntegratedExpr
            | IntegratedExpr INTEGRATED_OP;
-
-ArrayInitExprList = ArrayInitExprList COMMA ArrayInitExpr | ArrayInitExpr |;
-
-ArrayInitExpr = LEFT_SQUARE_BRACKET Evaluable RIGHT_SQUARE_BRACKET ASSIGNER ArithExpr | ArithExpr;
 
 ArithExpr = Arith_0_Expr | AssignExpr | LEFT_PARENTHESIS CondExpr RIGHT_PARENTHESIS;
 
@@ -84,9 +108,9 @@ Arith_3_Expr = Arith_3_Expr ARITH_3_BIN_OP Arith_4_Expr
 Arith_4_Expr = ARITH_4_SIN_OP Arith_4_Expr
              | Evaluable;
 
-Evaluable = IntegratedExpr
+Evaluable = ENUM_GROUP DOUBLE_COLON IDENTIFIER
+          | IntegratedExpr
           | FunctionCall
-          | ENUM_GROUP DOUBLE_COLON IDENTIFIER
           | LiteralValue;
 
 LiteralValue = VAL_LITERAL | SINGLE_CHAR | LiteralTexts;
@@ -102,6 +126,7 @@ Subscriber =  LEFT_SQUARE_BRACKET ArithExpr RIGHT_SQUARE_BRACKET;
 
 IntegratedExpr = LEFT_PARENTHESIS ArithExpr RIGHT_PARENTHESIS | Assignable | BUILTIN_IDENTIFIER;
 
-FunctionCall = BUILTIN_IDENTIFIER LEFT_PARENTHESIS Arguments RIGHT_PARENTHESIS;
+FunctionCall = FUNCNAME LEFT_PARENTHESIS Arguments RIGHT_PARENTHESIS;
 
-Arguments = Arguments COMMA ArithExpr | ArithExpr | ;
+Arguments = Arguments COMMA Argument | Argument | ;
+Argument = IDENTIFIER ASSIGNER VariableInitializer | VariableInitializer;
