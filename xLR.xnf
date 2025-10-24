@@ -12,7 +12,7 @@ EnumDeclaration = ENUM IDENTIFIER LEFT_BRACKET EnumItems RIGHT_BRACKET
 TypeDefinition = AttrList TYPEHINT IDENTIFIER LEFT_BRACKET Declarations RIGHT_BRACKET;
 AttrDefinition = AttrList ATTRIBUTE IDENTIFIER LEFT_PARENTHESIS Parameters RIGHT_PARENTHESIS ActionBlock
                | AttrList ATTRIBUTE IDENTIFIER ActionBlock;
-RuleDefinition = Type AttrList IDENTIFIER LEFT_PARENTHESIS Pattern RIGHT_PARENTHESIS ActionBlock;
+RuleDefinition = Type AttrList RULE IDENTIFIER LEFT_PARENTHESIS Pattern RIGHT_PARENTHESIS ActionBlock;
 FuncDefinition = Type AttrList IDENTIFIER LEFT_PARENTHESIS Parameters RIGHT_PARENTHESIS ActionBlock;
 TypeRenaming = TYPEDEF Type AttrList IDENTIFIER LEFT_PARENTHESIS Parameters RIGHT_PARENTHESIS
              | TYPEDEF Type AttrList IDENTIFIER Subscriber
@@ -59,12 +59,13 @@ Tokens = Tokens Token | Tokens TEXT | Token | TEXT |;
 Token = LEFT_PARENTHESIS Tokens RIGHT_PARENTHESIS
       | Token QUANTIFIER
       | SINGLE_CHAR
-      | IDENTIFIER;
+      | TYPENAME;
 
 ActionStatements = ActionStatements ActionStatement | ActionStatement;
-ActionStatement = CondStatement | ActionBlock | Declaration SEMICOLON | AssignExpr SEMICOLON;
+ActionStatement = CondStatement | ActionBlock | Declaration SEMICOLON | AssignExpr SEMICOLON | ControlStatement;
 
 CondStatement = IfStatement | ForStatement | WhileStatement | CondStatement ELSE ActionStatement;
+ControlStatement = BREAK SEMICOLON | CONTINUE SEMICOLON | RETURN ArithExpr SEMICOLON;
 
 IfStatement = IF IfCondition ActionStatement;
 ForStatement = FOR ForCondition ActionStatement;
