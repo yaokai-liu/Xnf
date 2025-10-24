@@ -121,7 +121,7 @@ LiteralTexts = LiteralTexts TEXT | TEXT;
 Assignable = IDENTIFIER | Accessed | Subscribed | Attributed;
 Accessed = IntegratedExpr DOT IDENTIFIER;
 Subscribed = IntegratedExpr Subscriber;
-Attributed = IntegratedExpr AT IDENTIFIER;
+Attributed = IntegratedExpr GET IDENTIFIER;
 
 Subscriber =  LEFT_SQUARE_BRACKET ArithExpr RIGHT_SQUARE_BRACKET;
 
