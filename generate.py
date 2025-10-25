@@ -17,7 +17,7 @@ if __name__ == '__main__':
     elif not os.path.isabs(sys.argv[1]):
         cfd = Path(os.getcwd()) / sys.argv[1]
     else:
-        cfd = sys.argv[0]
+        cfd = Path(sys.argv[1])
     if len(sys.argv) < 3 or sys.argv[2] != '--compact':
         compact = False
     else:
