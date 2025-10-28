@@ -17,15 +17,11 @@ FuncDefinition = Type AttrList IDENTIFIER LEFT_PARENTHESIS Parameters RIGHT_PARE
 TypeRenaming = TYPEDEF Type AttrList IDENTIFIER LEFT_PARENTHESIS Parameters RIGHT_PARENTHESIS
              | TYPEDEF Type AttrList IDENTIFIER Subscriber
              | TYPEDEF Type AttrList IDENTIFIER;
-AttrRenaming = ATTRDEF AttrList ATTRNAME LEFT_PARENTHESIS Arguments RIGHT_PARENTHESIS IDENTIFIER
-             | ATTRDEF AttrList ATTRNAME IDENTIFIER;
+AttrRenaming = ATTRDEF AttrList Attribute IDENTIFIER;
 
+Attribute = ATTRNAME LEFT_PARENTHESIS Arguments RIGHT_PARENTHESIS | ATTRNAME;
+AttrList = AttrList Attribute | Attribute | ;
 Type = TypeDefinition | AttrList TYPENAME;
-AttrList = AttrList ATTRNAME LEFT_PARENTHESIS Arguments RIGHT_PARENTHESIS
-         | ATTRNAME LEFT_PARENTHESIS Arguments RIGHT_PARENTHESIS
-         | AttrList ATTRNAME
-         | ATTRNAME
-         | ;
 EnumItems = EnumItems COMMA EnumItem | EnumItem;
 EnumItem = IDENTIFIER ASSIGNER Evaluable | IDENTIFIER;
 Declarations = Declarations Declaration | Declaration;
