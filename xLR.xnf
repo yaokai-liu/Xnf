@@ -80,7 +80,7 @@ OptionalLoopCondExpr = CondExpr | ;
 
 CondExpr = CondExpr COND_BIN_OP CompExpr | CompExpr;
 
-CompExpr = COND_SIN_OP CompExpr
+CompExpr = NOT CompExpr
          | ArithExpr COMPARE_OP ArithExpr
          | ArithExpr;
 
@@ -114,10 +114,9 @@ LiteralValue = VAL_LITERAL | SINGLE_CHAR | LiteralTexts;
 
 LiteralTexts = LiteralTexts TEXT | TEXT;
 
-Assignable = IDENTIFIER | Accessed | Subscribed | Attributed;
-Accessed = IntegratedExpr DOT IDENTIFIER;
+Assignable = IDENTIFIER | Accessed | Subscribed;
+Accessed = IntegratedExpr DOT IDENTIFIER | IntegratedExpr DOT NOT IDENTIFIER;
 Subscribed = IntegratedExpr Subscriber;
-Attributed = IntegratedExpr GET IDENTIFIER;
 
 Subscriber =  LEFT_SQUARE_BRACKET ArithExpr RIGHT_SQUARE_BRACKET;
 
