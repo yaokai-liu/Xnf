@@ -482,7 +482,7 @@ class Parser(object):
 
     def build(self):
         i, state = 0, tuple()
-        states, table, duplicated_state = [state], {state: dict()}, dict()
+        states, table, equivalent_states = [state], {state: dict()}, dict()
         items = self.__init_items__()
         cache = {state: self.__item_closure__(items)}
         while i < len(states):
@@ -493,13 +493,13 @@ class Parser(object):
                 assert _.lookahead not in table[state], \
                     f""" Conflicting reduce rules: {reduces}, state: {state} """
                 table[state][_.lookahead] = _.rule.name
-            for token in cache_by_token:
+            for token in sorted(cache_by_token):
                 items = {_.next() for _ in cache_by_token[token]}
                 next_state = state + (token,)
                 for s in cache:
                     if len(items - cache[s][0]) == 0:
                         table[state][token] = s
-                        duplicated_state[next_state] = s
+                        equivalent_states[next_state] = s
                         break
                 else:
                     states.append(next_state)
@@ -507,10 +507,15 @@ class Parser(object):
                     cache[next_state] = self.__item_closure__(items)
                     table[state][token] = next_state
             i += 1
-        return table, cache, duplicated_state
+        updates = dict()
+        for state, alter_state in equivalent_states.items():
+            jumps = { s:a for s, a in table[alter_state].items() if isinstance(a, tuple)}
+            updates.update({ state + (token,) : action for token, action in jumps.items() })
+        equivalent_states.update(updates)
+        return table, cache, equivalent_states
 
     def build_compact(self):
-        table, lr_items, duplicated_state = self.build()
+        table, lr_items, equivalent_states = self.build()
         redirect = dict()
         states = list(table.keys())
 
@@ -537,12 +542,12 @@ class Parser(object):
             for k, v in table[state].items():
                 if v in redirect:
                     table[state][k] = redirect[v]
-        return table, lr_items, duplicated_state
+        return table, lr_items, equivalent_states
 
     def dump(self, dest_dir: str, compact: bool = False):
         from pathlib import Path
         dest_dir = Path(dest_dir)
-        table, lr_items, duplicated_state = self.build_compact() if compact else self.build()
+        table, lr_items, equivalent_states = self.build_compact() if compact else self.build()
         rules = sorted(self.rules, key=lambda r: r.name)
         with open(dest_dir / 'tokens.json', 'w', encoding='utf-8') as f:
             f.write(str({
@@ -572,7 +577,7 @@ class Parser(object):
             }).replace("'", '"'))
         with open(dest_dir / 'folded_states.json', 'w') as f:
             f.write(str({
-                f"({', '.join(s)})": f"({', '.join(r)})"  for s, r in duplicated_state.items()
+                f"({', '.join(s)})": f"({', '.join(r)})"  for s, r in equivalent_states.items()
             }).replace("'", '"'))
 
 XNF_PARSER = Parser('XNF', lexer=XNF_LEXER)
