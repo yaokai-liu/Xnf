@@ -129,7 +129,7 @@ class Lexer(object):
                 column += _i
             if _n:
                 _input = _input[_n:]
-                lineno, column = lineno + 1, 0
+                lineno, column = lineno + _n, 1
             _i, _n = len(ignore(_input)), len(newline(_input))
 
         return _input, lineno, column
@@ -142,7 +142,7 @@ class Lexer(object):
 
     def __match(self, _input, **kwargs):
         self.lineno = kwargs.get('lineno') or 0
-        self.column = kwargs.get('colpos') or 0
+        self.column = kwargs.get('column') or 0
         if kwargs.get('mode') == 'longest':
             result, _type = None, None
             for p in sorted(self.__PRIORITIES__.keys(), reverse=True):
@@ -173,7 +173,7 @@ class Lexer(object):
         if not token:
             return self.__match(_input)
         self.lineno = kwargs.get('lineno') or 0
-        self.column = kwargs.get('colpos') or 0
+        self.column = kwargs.get('column') or 0
         if token == '_LITERAL_':
             if self.literal_patterns.match(_input):
                 res = self.literal_patterns.match(_input)
@@ -183,8 +183,8 @@ class Lexer(object):
         return self.__TOKENS__[token](_input)
 
     def tokenize(self, _input, **kwargs):
-        lineno = kwargs.get('lineno') or 0
-        column = kwargs.get('column') or 0
+        lineno = kwargs.get('lineno') or 1
+        column = kwargs.get('column') or 1
         _input, lineno, column = self.__pass_space(_input, lineno, column)
         while _input:
             kwargs.update({'lineno': lineno, 'column': column})
@@ -197,6 +197,7 @@ class Lexer(object):
             column = column + len(token.value)
             _input = _input[len(token.value):]
             _input, lineno, column = self.__pass_space(_input, lineno, column)
+        return None
 
 
 # xParse Normal Format: expressions to describe the grammar of xParse.
@@ -325,7 +326,6 @@ def __build_rules__(xnf_tokens):
     assert status == 0, "EOF occurs!"
     return rules
 
-
 class Parser(object):
 
     def __init__(self, name: str, **kwargs):
@@ -335,6 +335,7 @@ class Parser(object):
         self.__TARGETS__ = dict()
         self.__FIRST_SET__ = dict()
         self.__FOLLOW_SET__ = dict()
+        self.__ENV_SET__ = set()
         self.__START__ = None
         self.__LEXER__ = kwargs.get('lexer') or None
         self.lineno = kwargs.get("lineno") or 0
@@ -359,6 +360,10 @@ class Parser(object):
     def targets(self):
         return set(self.__TARGETS__.keys())
 
+    def add_environment(self, tokens: set[str]):
+        for token in tokens:
+            self.__ENV_SET__.update(self.first_set_of([token]))
+
     def set_rules(self, _input, start: str):
         tokens = self.__LEXER__.tokenize(_input)
         rules = __build_rules__(tokens)
@@ -372,7 +377,7 @@ class Parser(object):
         self.__update_first_set__()
         self.__update_follow_set__()
 
-    def __first_set_of__(self, _items):
+    def __first_set_of__(self, _items: list[str]):
         set1 = {"#"}
         for item in _items:
             set1.update(self.__FIRST_SET__[item])
@@ -397,6 +402,7 @@ class Parser(object):
         self.__TOKENS__.add(start)
         self.__TARGETS__['~'] = {rule}
         self.__START__ = start
+        self.__TOKENS__.add("$")
 
     def __update_first_set__(self):
         self.__FIRST_SET__.clear()
@@ -466,36 +472,50 @@ class Parser(object):
                 extend.add(LrItem(_rule, lr_item.lookahead, 0))
         return extend
 
+    def __init_items__(self):
+        if len(self.__ENV_SET__) == 0:
+            return {LrItem(_, "$", 0) for _ in XNF_PARSER.__TARGETS__['~']}
+        target = set()
+        for lookahead in self.__ENV_SET__:
+            target.update({LrItem(_, lookahead, 0) for _ in XNF_PARSER.__TARGETS__['~']})
+        return target
+
     def build(self):
         i, state = 0, tuple()
-        states, table = [state], {state: dict()}
-        target = {LrItem(_, "$", 0) for _ in XNF_PARSER.__TARGETS__['~']}
-        cache = {state: self.__item_closure__(target)}
+        states, table, equivalent_states = [state], {state: dict()}, dict()
+        items = self.__init_items__()
+        cache = {state: self.__item_closure__(items)}
         while i < len(states):
             state = states[i]
-            _closure, _c_by_t = cache[state]
-            reduces = _c_by_t.pop(None) if None in _c_by_t else set()
+            _closure, cache_by_token = cache[state]
+            reduces = cache_by_token.pop(None) if None in cache_by_token else set()
             for _ in reduces:
                 assert _.lookahead not in table[state], \
                     f""" Conflicting reduce rules: {reduces}, state: {state} """
                 table[state][_.lookahead] = _.rule.name
-            for t in _c_by_t:
-                target = {_.next() for _ in _c_by_t[t]}
+            for token in sorted(cache_by_token):
+                items = {_.next() for _ in cache_by_token[token]}
+                next_state = state + (token,)
                 for s in cache:
-                    if len(target - cache[s][0]) == 0:
-                        table[state][t] = s
+                    if len(items - cache[s][0]) == 0:
+                        table[state][token] = s
+                        equivalent_states[next_state] = s
                         break
                 else:
-                    _n_state = state + (t,)
-                    states.append(_n_state)
-                    table[_n_state] = dict()
-                    cache[_n_state] = self.__item_closure__(target)
-                    table[state][t] = _n_state
+                    states.append(next_state)
+                    table[next_state] = dict()
+                    cache[next_state] = self.__item_closure__(items)
+                    table[state][token] = next_state
             i += 1
-        return table, cache
+        updates = dict()
+        for state, alter_state in equivalent_states.items():
+            jumps = { s:a for s, a in table[alter_state].items() if isinstance(a, tuple)}
+            updates.update({ state + (token,) : action for token, action in jumps.items() })
+        equivalent_states.update(updates)
+        return table, cache, equivalent_states
 
     def build_compact(self):
-        table, lr_items = self.build()
+        table, lr_items, equivalent_states = self.build()
         redirect = dict()
         states = list(table.keys())
 
@@ -522,15 +542,12 @@ class Parser(object):
             for k, v in table[state].items():
                 if v in redirect:
                     table[state][k] = redirect[v]
-
-        print(len(table))
-
-        return table, lr_items
+        return table, lr_items, equivalent_states
 
     def dump(self, dest_dir: str, compact: bool = False):
         from pathlib import Path
         dest_dir = Path(dest_dir)
-        table, lr_items = self.build_compact() if compact else self.build()
+        table, lr_items, equivalent_states = self.build_compact() if compact else self.build()
         rules = sorted(self.rules, key=lambda r: r.name)
         with open(dest_dir / 'tokens.json', 'w', encoding='utf-8') as f:
             f.write(str({
@@ -547,7 +564,7 @@ class Parser(object):
             lines = [f"'{t}': {list(s)}".replace("'", '"')
                      for t, s in self.__FOLLOW_SET__.items()]
             f.write('{' + ','.join(lines) + '}')
-        table_name = 'machine.json' if not compact else 'machine-compact.json'
+        table_name = 'automaton.json' if not compact else 'automaton-compact.json'
         with open(dest_dir / table_name, 'w') as f:
             f.write(str({
                 f"({', '.join(i)})": {
@@ -558,7 +575,10 @@ class Parser(object):
             f.write(str({
                 f"({', '.join(s)})": list(r[0]) for s, r in lr_items.items()
             }).replace("'", '"'))
-
+        with open(dest_dir / 'folded_states.json', 'w') as f:
+            f.write(str({
+                f"({', '.join(s)})": f"({', '.join(r)})"  for s, r in equivalent_states.items()
+            }).replace("'", '"'))
 
 XNF_PARSER = Parser('XNF', lexer=XNF_LEXER)
 

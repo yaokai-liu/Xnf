@@ -1,0 +1,30 @@
+name: sync-main-branch
+run-name: Sync Branch with Main Branch
+permissions:
+  contents: write
+on:
+  push:
+    branches:
+      - LIU
+jobs:
+  check-bats-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fetch and Merge
+        id: fetch_branches
+        shell: bash
+        run: |
+          git config --global user.name "github-action[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreplay.github.com"
+          git pull --prune
+          BRANCHES=$(git for-each-ref refs/remotes/origin/ --format='%(refname:short)' | sed 's|^origin/\?||' | grep -v '^$\|^LIU$')
+          while read branch; do
+            echo "=== Sync branch: $branch ==="
+            git checkout "$branch"
+            git merge LIU -m "Merge branch 'LIU' into $branch (auto-sync)"
+            git push origin "$branch"
+          done<<<"$BRANCHES"
