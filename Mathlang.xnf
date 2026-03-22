@@ -3,70 +3,86 @@ MathEntry = Definition | Theorem | Procedure;
 
 Definition = DEFINITION_TYPE DefHeader TextBlock DENOTEAS LEFT_BRACKET NotationDefinitions RIGHT_BRACKET
            | DEFINITION_TYPE DefHeader TextBlock;
-Theorem = THEOREM_TYPE ThmHeader TextBlock ProofBlock
+Theorem = THEOREM_TYPE ThmHeader TextBlock PROOF TextBlock
         | AXIOM_TYPE ThmHeader TextBlock;
-Procedure = PROCEDURE ProcHeader ActionBlock DENOTEAS LEFT_BRACKET NotationDefinitions RIGHT_BRACKET
-          | PROCEDURE ProcHeader ActionBlock;
+Procedure = PROCEDURE ProcHeader LEFT_BRACKET OperaSentences RIGHT_BRACKET DENOTEAS LEFT_BRACKET NotationDefinitions RIGHT_BRACKET
+          | PROCEDURE ProcHeader LEFT_BRACKET OperaSentences RIGHT_BRACKET;
 
 DefHeader = LEFT_PARENTHESIS NounPhrases RIGHT_PARENTHESIS;
 ThmHeader = LEFT_PARENTHESIS NounPhrases RIGHT_PARENTHESIS | ;
 ProcHeader = LEFT_PARENTHESIS Verb RIGHT_PARENTHESIS;
 NotationDefinitions = NotationDefinitions NotationDefinition | NotationDefinition;
 
-NotationDefinition = LEFT_SQUARE_BRACKET NounPhrase RIGHT_SQUARE_BRACKET NotationBlock LATEX LatexExpression SEMICOLON;
+NotationDefinition = LEFT_SQUARE_BRACKET NounPhrase RIGHT_SQUARE_BRACKET LEFT_PARENTHESIS NounPhrases RIGHT_PARENTHESIS
+                        LATEX LEFT_LATEX_BRACKET LatexExpression RIGHT_LATEX_BRACKET SEMICOLON;
 
-NounPhrases = NounPhrases COMMA NounPhrase | NounPhrase;
+NounPhrases = NounPhrases COMMA NotedNounPhrase CONJUNCTION NotedNounPhrase
+            | NotedNounPhrase CONJUNCTION NotedNounPhrase
+            | NotedNounPhrase COMMA NotedNounPhrase
+            | NotedNounPhrase;
 TextBlock = LEFT_BRACKET Sentences RIGHT_BRACKET;
-ActionBlock = LEFT_BRACKET OperaSentences RIGHT_BRACKET;
-ProofBlock = PROOF LEFT_BRACKET Sentences RIGHT_BRACKET;
+
 
 Sentences = Sentences Sentence | Sentence;
-StateSentences = StateSentences StateSentence | StateSentence;
 OperaSentences = OperaSentences OperaSentence | OperaSentence;
 
 Sentence = StateSentence | OperaSentence;
 StateSentence = Statement DOT;
-OperaSentence = Operation DOT;
+OperaSentence = Action DOT;
 
-Statement = Complement COMMA Statement
+Statement = DOUBLE_LEFT_SQUARE_BRACKET Statement DOUBLE_RIGHT_SQUARE_BRACKET
+          | Complement COMMA Statement
+          | Statement COMMA Complement
           | Statement Complement
-          | Subjective Verb Objective Objective
-          | Subjective Verb Objective
-          | Subjective Verb
-          | WrappedStatement;
-Operation = Verb Objective Objective
-          | Verb Objective
-          | Verb Statement;
+          | Subjective Action
+          | Subjective;
 
-WrappedStatement = DOUBLE_LEFT_SQUARE_BRACKET Statement DOUBLE_RIGHT_SQUARE_BRACKET;
+Action = Verb NounPhrases | Verb;
 
-Subjective = Objective | PRONOUN;
-Objective = NounPhrase LEFT_BRACKET Notation RIGHT_BRACKET | NounPhrase;
+Subjective = NounPhrases | PRONOUN;
+NotedNounPhrase = NounPhrase LEFT_BRACKET Notations RIGHT_BRACKET
+                | LEFT_BRACKET Notations RIGHT_BRACKET
+                | NounPhrase;
 Verb = Adverb VERB Complement
      | VERB Complement
      | Adverb VERB
      | VERB;
 
-NounPhrase = THE NUMBER PREP BareNounPhrase
+NounPhrase = LEFT_BRACKET NUMBER RIGHT_BRACKET
+           | THE NUMBER PREP BareNounPhrase
            | THE NUMBER PREP Refer
            | NUMBER BareNounPhrase
            | BareNounPhrase
            | NUMBER Refer
-           | Numeric
            | Refer;
 
-BareNounPhrase = LEFT_BRACKET NounPhrases RIGHT_BRACKET
-               | Adjective NOUN Complement
+BareNounPhrase = Adjective NOUN Complement
                | NOUN Complement
-               | Adjective NOUN;
-
+               | Adjective NOUN
+               | NOUN;
 
 Adjective = Adjective Adverb ADJECTIVE | Adverb ADJECTIVE;
 Adverb = Adverb ADVERB | ADVERB;
-Complement = Adverb | Adjective | PREP Objective | CONJUNCTION Statement;
+Complement = Adverb | Adjective | PREP NotedNounPhrase | CLAUSE Statement;
 
+Notations = Notations COMMA Notation | Notation;
+
+Notation = IDENTIFIER LEFT_PARENTHESIS Arguments RIGHT_PARENTHESIS
+         | IDENTIFIER
+         | NUMBER;
 Refer = LEFT_ANGLE_BRACKET BareNounPhrase RIGHT_ANGLE_BRACKET
       | LEFT_ANGLE_BRACKET Verb RIGHT_ANGLE_BRACKET;
 
-Numeric = LEFT_BRACKET NUMBER RIGHT_BRACKET;
+Arguments = Arguments COMMA Argument | Argument;
 
+Argument = IDENTIFIER | NUMBER;
+
+LatexExpression = LatexExpression LatexSymbol | LatexSymbol;
+
+LatexSymbol = LatexSymbol UNDERSCORE BaseLatexSymbol
+            | LatexSymbol CIRCUMFLEX BaseLatexSymbol
+            | BaseLatexSymbol;
+BaseLatexSymbol = HASHTAG LEFT_BRACKET Notation RIGHT_BRACKET
+                | LEFT_BRACKET LatexExpression RIGHT_BRACKET
+                | SINGLE_LATEX_SYMBOL
+                | LONG_LATEX_SYMBOL;
