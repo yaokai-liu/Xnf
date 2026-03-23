@@ -1,0 +1,9 @@
+LatexExpression = LatexExpression LatexSymbol | LatexSymbol;
+
+LatexSymbol = LatexSymbol UNDERSCORE BaseLatexSymbol
+            | LatexSymbol CIRCUMFLEX BaseLatexSymbol
+            | BaseLatexSymbol;
+BaseLatexSymbol = HASHTAG LEFT_BRACKET NOTATION RIGHT_BRACKET
+                | LEFT_BRACKET LatexExpression RIGHT_BRACKET
+                | SINGLE_LATEX_SYMBOL
+                | LONG_LATEX_SYMBOL;
