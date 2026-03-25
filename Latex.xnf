@@ -3,12 +3,15 @@ LatexExpression = LatexExpression LatexSymbol | LatexSymbol;
 LatexSymbol = LatexSymbol UNDERSCORE BaseLatexSymbol
             | LatexSymbol CIRCUMFLEX BaseLatexSymbol
             | BaseLatexSymbol;
-BaseLatexSymbol = LEFT_PARENTHESIS LatexExpression RIGHT_PARENTHESIS
-                | LEFT_BRACKET LatexExpression RIGHT_BRACKET
-                | LATEX_SYMBOL Arguments
-                | LATEX_SYMBOL;
+BaseLatexSymbol = LEFT_BRACKET LatexExpression RIGHT_BRACKET
+                | LATEX_SYMBOL LatexArguments
+                | LATEX_SYMBOL
+                | PlaceHolder;
 
-Arguments = Arguments Argument | Argument;
+LatexArguments = LatexArguments LatexArgument | LatexArgument;
 
-Argument = LEFT_SQUARE_BRACKET LatexExpression RIGHT_SQUARE_BRACKET
+LatexArgument = LEFT_SQUARE_BRACKET LatexExpression RIGHT_SQUARE_BRACKET
          | LEFT_BRACKET LatexExpression RIGHT_BRACKET;
+
+PlaceHolder = HASHTAG LEFT_BRACKET Notation RIGHT_BRACKET;
+

@@ -46,8 +46,8 @@ Verb = Adverb VERB Complement
      | VERB;
 
 NounPhrase = LEFT_BRACKET NUMBER RIGHT_BRACKET
-           | THE NUMBER PREP BareNounPhrase
-           | THE NUMBER PREP Refer
+           | ARTICLE NUMBER PREP BareNounPhrase
+           | ARTICLE NUMBER PREP Refer
            | NUMBER BareNounPhrase
            | BareNounPhrase
            | NUMBER Refer
@@ -68,12 +68,5 @@ Complement = Adverb | Adjective | PREP NounPhrase | CLAUSE Statement;
 
 Notations = Notations COMMA Notation | Notation;
 
-Notation = IDENTIFIER LEFT_PARENTHESIS Arguments RIGHT_PARENTHESIS
-         | IDENTIFIER
-         | NUMBER;
 Refer = LEFT_ANGLE_BRACKET BareNounPhrase RIGHT_ANGLE_BRACKET
       | LEFT_ANGLE_BRACKET Verb RIGHT_ANGLE_BRACKET;
-
-Arguments = Arguments COMMA Argument | Argument;
-
-Argument = IDENTIFIER | NUMBER;
