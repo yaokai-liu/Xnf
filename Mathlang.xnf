@@ -14,7 +14,7 @@ ProcHeader = LEFT_PARENTHESIS Verb RIGHT_PARENTHESIS;
 NotationDefinitions = NotationDefinitions NotationDefinition | NotationDefinition;
 
 NotationDefinition = LEFT_SQUARE_BRACKET NounPhrase RIGHT_SQUARE_BRACKET LEFT_PARENTHESIS NounPhrases RIGHT_PARENTHESIS
-                        LATEX LATEX_DELIMITER LATEX_EXPRESSION LATEX_DELIMITER SEMICOLON;
+                        LATEX LATEX_DELIMITER LatexExpression LATEX_DELIMITER SEMICOLON;
 
 NounPhrases = NounPhrases COMMA NounPhrase CONJUNCTION NounPhrase
             | NounPhrase CONJUNCTION NounPhrase
@@ -70,3 +70,21 @@ Notations = Notations COMMA Notation | Notation;
 
 Refer = LEFT_ANGLE_BRACKET BareNounPhrase RIGHT_ANGLE_BRACKET
       | LEFT_ANGLE_BRACKET Verb RIGHT_ANGLE_BRACKET;
+
+LatexExpression = LatexExpression LatexSymbol | LatexSymbol;
+LatexSymbol = BareLatexSymbol CIRCUMFLEX LatexSymbol
+            | BareLatexSymbol UNDERSCORE LatexSymbol
+            | BareLatexSymbol;
+
+BareLatexSymbol = LEFT_SQUARE_BRACKET LatexExpression RIGHT_SQUARE_BRACKET
+                | LEFT_PARENTHESIS LatexExpression RIGHT_PARENTHESIS
+                | LEFT_BRACKET LatexExpression RIGHT_BRACKET
+                | HASHTAG LEFT_BRACKET Notation RIGHT_BRACKET
+                | LATEX_COMMAND
+                | LATEX_SYMBOL;
+
+Notation = IDENTIFIER LEFT_PARENTHESIS Arguments RIGHT_PARENTHESIS
+         | IDENTIFIER
+         | NUMBER;
+Arguments = Arguments COMMA Notation | Notation;
+

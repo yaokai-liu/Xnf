@@ -1,7 +1,0 @@
-
-Notation = IDENTIFIER LEFT_PARENTHESIS Arguments RIGHT_PARENTHESIS
-         | IDENTIFIER
-         | NUMBER;
-
-Arguments = Arguments COMMA Notation | Notation;
-
