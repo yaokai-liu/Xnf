@@ -28,16 +28,16 @@ OperaSentences = OperaSentences OperaSentence | OperaSentence;
 
 Sentence = StateSentence | OperaSentence;
 StateSentence = Statement DOT;
-OperaSentence = Action DOT;
+OperaSentence = Operation DOT;
 
 Statement = DOUBLE_LEFT_SQUARE_BRACKET Statement DOUBLE_RIGHT_SQUARE_BRACKET
           | Complement COMMA Statement
           | Statement COMMA Complement
           | Statement Complement
-          | Subjective Action
+          | Subjective Operation
           | Subjective;
 
-Action = Verb NounPhrases | Verb;
+Operation = Verb NounPhrases | Verb;
 
 Subjective = NounPhrases | PRONOUN;
 Verb = Adverb VERB Complement
@@ -83,8 +83,7 @@ BareLatexSymbol = LEFT_SQUARE_BRACKET LatexExpression RIGHT_SQUARE_BRACKET
                 | LATEX_COMMAND
                 | LATEX_SYMBOL;
 
-Notation = IDENTIFIER LEFT_PARENTHESIS Arguments RIGHT_PARENTHESIS
+Notation = IDENTIFIER LEFT_PARENTHESIS Notations RIGHT_PARENTHESIS
          | IDENTIFIER
          | NUMBER;
-Arguments = Arguments COMMA Notation | Notation;
 
