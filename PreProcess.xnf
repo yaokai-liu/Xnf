@@ -1,0 +1,4 @@
+PreProcessMacro = HASHTAG FROM PATH_STRING IMPORT NounPhrases
+                | HASHTAG FROM PATH_STRING IMPORT STAR
+                | HASHTAG IMPORT PATH_STRING;
+

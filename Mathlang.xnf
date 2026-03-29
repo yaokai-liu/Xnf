@@ -1,11 +1,11 @@
 
 MathEntry = Definition | Theorem | Procedure;
 
-Definition = DEFINITION_TYPE DefHeader TextBlock DENOTEAS LEFT_BRACKET NotationDefinitions RIGHT_BRACKET
+Definition = DEFINITION_TYPE DefHeader TextBlock DENOTE LEFT_BRACKET NotationDefinitions RIGHT_BRACKET
            | DEFINITION_TYPE DefHeader TextBlock;
 Theorem = THEOREM_TYPE ThmHeader TextBlock PROOF TextBlock
         | AXIOM_TYPE ThmHeader TextBlock;
-Procedure = PROCEDURE ProcHeader LEFT_BRACKET OperaSentences RIGHT_BRACKET DENOTEAS LEFT_BRACKET NotationDefinitions RIGHT_BRACKET
+Procedure = PROCEDURE ProcHeader LEFT_BRACKET OperaSentences RIGHT_BRACKET DENOTE LEFT_BRACKET NotationDefinitions RIGHT_BRACKET
           | PROCEDURE ProcHeader LEFT_BRACKET OperaSentences RIGHT_BRACKET;
 
 DefHeader = LEFT_PARENTHESIS NounPhrases RIGHT_PARENTHESIS;
@@ -13,15 +13,12 @@ ThmHeader = LEFT_PARENTHESIS NounPhrases RIGHT_PARENTHESIS | ;
 ProcHeader = LEFT_PARENTHESIS Verb RIGHT_PARENTHESIS;
 NotationDefinitions = NotationDefinitions NotationDefinition | NotationDefinition;
 
-NotationDefinition = LEFT_SQUARE_BRACKET NounPhrase RIGHT_SQUARE_BRACKET LEFT_PARENTHESIS NounPhrases RIGHT_PARENTHESIS
-                        LATEX LATEX_DELIMITER LatexExpression LATEX_DELIMITER SEMICOLON;
+NotationDefinition = LEFT_SQUARE_BRACKET NounPhrase RIGHT_SQUARE_BRACKET LEFT_PARENTHESIS Notations RIGHT_PARENTHESIS
+                         AS LATEX_DELIMITER LatexExpression LATEX_DELIMITER SEMICOLON
+                   | DOUBLE_LEFT_SQUARE_BRACKET Sentence DOUBLE_RIGHT_SQUARE_BRACKET LEFT_PARENTHESIS Notations RIGHT_PARENTHESIS
+                         AS LATEX_DELIMITER LatexExpression LATEX_DELIMITER SEMICOLON;
 
-NounPhrases = NounPhrases COMMA NounPhrase CONJUNCTION NounPhrase
-            | NounPhrase CONJUNCTION NounPhrase
-            | NounPhrase COMMA NounPhrase
-            | NounPhrase;
 TextBlock = LEFT_BRACKET Sentences RIGHT_BRACKET;
-
 
 Sentences = Sentences Sentence | Sentence;
 OperaSentences = OperaSentences OperaSentence | OperaSentence;
@@ -44,6 +41,11 @@ Verb = Adverb VERB Complement
      | VERB Complement
      | Adverb VERB
      | VERB;
+
+NounPhrases = NounPhrases COMMA NounPhrase CONJUNCTION NounPhrase
+            | NounPhrase CONJUNCTION NounPhrase
+            | NounPhrase COMMA NounPhrase
+            | NounPhrase;
 
 NounPhrase = LEFT_BRACKET NUMBER RIGHT_BRACKET
            | ARTICLE NUMBER PREP BareNounPhrase
@@ -83,7 +85,10 @@ BareLatexSymbol = LEFT_SQUARE_BRACKET LatexExpression RIGHT_SQUARE_BRACKET
                 | LATEX_COMMAND
                 | LATEX_SYMBOL;
 
-Notation = IDENTIFIER LEFT_PARENTHESIS Notations RIGHT_PARENTHESIS
-         | IDENTIFIER
-         | NUMBER;
+NotationSymbol = LATEX_COMMAND LEFT_BRACKET LATEX_SYMBOL RIGHT_BRACKET
+               | LATEX_COMMAND LEFT_BRACKET Notation RIGHT_BRACKET
+               | LATEX_SYMBOL;
 
+Notation = NotationSymbol LEFT_PARENTHESIS Notations RIGHT_PARENTHESIS
+         | NotationSymbol
+         | NUMBER;
