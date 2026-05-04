@@ -1,17 +1,29 @@
 
-MathEntry = Definition | Theorem | Procedure;
+MathEntry = PreProcessMacro | Definition | Theorem | Procedure | StateSentences;
+
+PreProcessMacro = HASHTAG FROM PATH_STRING IMPORT LEFT_BRACKET NounPhrase RIGHT_BRACKET AS LEFT_BRACKET NounPhrase RIGHT_BRACKET SEMICOLON
+                | HASHTAG FROM PATH_STRING IMPORT LEFT_BRACKET NounPhrases RIGHT_BRACKET SEMICOLON
+                | HASHTAG FROM PATH_STRING IMPORT STAR SEMICOLON
+                | HASHTAG IMPORT LEFT_BRACKET PathStrings RIGHT_BRACKET SEMICOLON
+                | HASHTAG INTRO IntroItems SEMICOLON;
 
 Definition = DEFINITION_TYPE DefHeader TextBlock DENOTE LEFT_BRACKET NotationDefinitions RIGHT_BRACKET
+           | DENOTE LEFT_BRACKET NotationDefinitions RIGHT_BRACKET
            | DEFINITION_TYPE DefHeader TextBlock;
 Theorem = THEOREM_TYPE ThmHeader TextBlock PROOF TextBlock
         | AXIOM_TYPE ThmHeader TextBlock;
 Procedure = PROCEDURE ProcHeader LEFT_BRACKET OperaSentences RIGHT_BRACKET DENOTE LEFT_BRACKET NotationDefinitions RIGHT_BRACKET
           | PROCEDURE ProcHeader LEFT_BRACKET OperaSentences RIGHT_BRACKET;
 
-DefHeader = LEFT_PARENTHESIS NounPhrases RIGHT_PARENTHESIS;
-ThmHeader = LEFT_PARENTHESIS NounPhrases RIGHT_PARENTHESIS | ;
+IntroItems = IntroItems COMMA IntroItem | IntroItem;
+IntroItem = IDENTIFIER AS WORD_CAT FROM IDENTIFIER
+          | IDENTIFIER AS WORD_CAT;
+
+DefHeader = LEFT_PARENTHESIS BareNounPhrase RIGHT_PARENTHESIS;
+ThmHeader = LEFT_PARENTHESIS BareNounPhrase RIGHT_PARENTHESIS | ;
 ProcHeader = LEFT_PARENTHESIS Verb RIGHT_PARENTHESIS;
 NotationDefinitions = NotationDefinitions NotationDefinition | NotationDefinition;
+PathStrings = PathStrings COMMA PATH_STRING | PATH_STRING;
 
 NotationDefinition = LEFT_SQUARE_BRACKET NounPhrase RIGHT_SQUARE_BRACKET LEFT_PARENTHESIS Notations RIGHT_PARENTHESIS
                          AS LATEX_DELIMITER LatexExpression LATEX_DELIMITER SEMICOLON
@@ -21,6 +33,7 @@ NotationDefinition = LEFT_SQUARE_BRACKET NounPhrase RIGHT_SQUARE_BRACKET LEFT_PA
 TextBlock = LEFT_BRACKET Sentences RIGHT_BRACKET;
 
 Sentences = Sentences Sentence | Sentence;
+StateSentences = StateSentences StateSentence | StateSentence;
 OperaSentences = OperaSentences OperaSentence | OperaSentence;
 
 Sentence = StateSentence | OperaSentence;
@@ -70,7 +83,9 @@ Complement = Adverb | Adjective | PREP NounPhrase | CLAUSE Statement;
 
 Notations = Notations COMMA Notation | Notation;
 
-Refer = LEFT_ANGLE_BRACKET BareNounPhrase RIGHT_ANGLE_BRACKET
+Refer = LEFT_ANGLE_BRACKET PATH_STRING COLON BareNounPhrase RIGHT_ANGLE_BRACKET
+      | LEFT_ANGLE_BRACKET PATH_STRING COLON Verb RIGHT_ANGLE_BRACKET
+      | LEFT_ANGLE_BRACKET BareNounPhrase RIGHT_ANGLE_BRACKET
       | LEFT_ANGLE_BRACKET Verb RIGHT_ANGLE_BRACKET;
 
 LatexExpression = LatexExpression LatexSymbol | LatexSymbol;
