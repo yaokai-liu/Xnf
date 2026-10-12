@@ -9,7 +9,7 @@ if __name__ == '__main__':
     parser.add_argument('entry', type=str, help='the grammar entry')
     parser.add_argument('-e', '--environments', type=str, help='environments the grammar will be applied')
     parser.add_argument('-o', '--output-directory', type=Path, help='the output directory')
-    parser.add_argument('-c', '--compact', type=bool, action=BooleanOptionalAction, help='generate the LR(0) version')
+    parser.add_argument('-c', '--compact', action=BooleanOptionalAction, help='generate the LR(0) version')
     args = parser.parse_args()
     args.grammar = Path(os.getcwd()) / args.grammar
     args.output_directory = Path(os.getcwd()) / args.output_directory if args.output_directory else Path(os.getcwd())
